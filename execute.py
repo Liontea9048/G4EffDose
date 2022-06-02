@@ -137,6 +137,6 @@ if __name__ == "__main__":
         system("cmake ./ &&")
         commands = f"make -j 10 && ./External -m ./example.in -o {outputPath}/{posture}_{pos}.out &" 
         system(commands)
-        log(commands)
+        log(workingDir, commands)
 
 
