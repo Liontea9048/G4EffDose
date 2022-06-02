@@ -118,9 +118,9 @@ if __name__ == "__main__":
         # change directory for make
         chdir(inputPath)
         # cp the base templete
-        system(f"cp -rf {baseDir}/\* ./")
+        system(f"cp -rf {baseDir}/* ./")
         # cp src files suitable for the case
-        system(f"cp -rf {srcFileDir}\/* ./src")
+        system(f"cp -rf {srcFileDir}/{posture}/* ./src")
 
         modifyExample(numCores, nps)
         modifyAmbeSource(pos)
