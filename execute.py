@@ -1,5 +1,3 @@
-from datetime import datetime
-from inspect import getargs
 from os import chdir, getcwd, listdir, system, makedirs
 from os.path import join
 import argparse
@@ -83,7 +81,7 @@ def log(workingDir, txt):
     file = join(workingDir, "log.txt")
     f = open(file, "a")
     # Get thr current time in YYYY-MM-DD form 
-    timeline = datetime.today().strtime("%Y-%m-%d")
+    timeline = datetime.now()
     args = get_args()
     f.write(f"{timeline} : {txt} | args : core: {args.cores}, nps: {args.nps}, posture: {args.posture}, posLst: {args.positionList}")
 
