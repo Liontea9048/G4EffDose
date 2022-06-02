@@ -118,6 +118,8 @@ if __name__ == "__main__":
 
         # change directory for make
         chdir(inputPath)
+        print(inputPath)
+        print(getcwd())
         # cp the base templete
         system(f"cp -rf {baseDir}/* ./")
         # cp src files suitable for the case
@@ -133,8 +135,7 @@ if __name__ == "__main__":
             pass 
 
         #cmake
-        system("cmake ./ &&")
-        sleep(10)
+        system("cmake ./")
         commands = f"make -j 10 && ./External -m ./example.in -o {outputPath}/{posture}_{pos}.out &" 
         system(commands)
         log(workingDir, commands)
