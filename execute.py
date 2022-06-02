@@ -3,6 +3,7 @@ from os.path import join
 import argparse
 import ast
 from datetime import datetime
+from time import sleep
 
 
 def arg_as_list(s):
@@ -133,6 +134,7 @@ if __name__ == "__main__":
 
         #cmake
         system("cmake ./ &&")
+        sleep(10)
         commands = f"make -j 10 && ./External -m ./example.in -o {outputPath}/{posture}_{pos}.out &" 
         system(commands)
         log(workingDir, commands)
