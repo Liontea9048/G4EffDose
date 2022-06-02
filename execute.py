@@ -83,7 +83,7 @@ def log(workingDir, txt):
     # Get thr current time in YYYY-MM-DD form 
     timeline = datetime.now()
     args = get_args()
-    f.write(f"{timeline} : {txt} | args : core: {args.cores}, nps: {args.nps}, posture: {args.posture}, posLst: {args.positionList}")
+    f.write(f"{timeline} : {txt} | args : core: {args.cores}, nps: {args.nps}, posture: {args.posture}, posLst: {args.positionList}\n")
 
 if __name__ == "__main__":
     # args control
