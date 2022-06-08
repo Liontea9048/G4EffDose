@@ -25,8 +25,8 @@
 //
 // TETDetectorConstruction.cc
 // \file   MRCP_GEANT4/External/src/TETDetectorConstruction.cc
-// \author Haegin Han
-//
+// \author Sangbin Han
+
 
 #include "TETDetectorConstruction.hh"
 #include "G4VSolid.hh"
@@ -65,13 +65,7 @@ void TETDetectorConstruction::SetupWorldGeometry()
 	// Operating or Supporting
 	// Sonde
 	//  =======================================================================
-	G4double sonde_position = 106. * cm;
-	// G4double sonde_position = 100. * cm;
-	//	G4double sonde_position = 50.*cm;
-	//    G4double sonde_position = 30.*m;
-	//	G4double sonde_position = -30.*m;
-	//	G4double sonde_position = -50.*m;
-	//	G4double sonde_position = -100.*m;
+	G4double sonde_position = 100. * cm;
 	// =======================================================================
 	G4bool checkOverlaps = true;
 	G4Material *vacuum = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
@@ -100,7 +94,10 @@ void TETDetectorConstruction::SetupWorldGeometry()
 	G4Material *Titanium = G4NistManager::Instance()->FindOrBuildMaterial("G4_Ti");
 	G4Material *Oxygen = G4NistManager::Instance()->FindOrBuildMaterial("G4_O");
 	G4Material *Americium = G4NistManager::Instance()->FindOrBuildMaterial("G4_Am");
-
+	G4Material *Carbon = G4NistManager::Instance()->FindOrBuildMaterial("G4_C");
+	G4Material *Cronium = G4NistManager::Instance()->FindOrBuildMaterial("G4_Cr");
+	G4Material *Nikel = G4NistManager::Instance()->FindOrBuildMaterial("G4_Ni");
+	G4Material *Sulfur = G4NistManager::Instance()->FindOrBuildMaterial("G4_S");
 	G4Material *Beryllium = G4NistManager::Instance()->FindOrBuildMaterial("G4_Be");
 	G4Material *Am2O3 = new G4Material("Am2O3", 12.1656 * g / cm3, 2);
 
@@ -134,9 +131,7 @@ void TETDetectorConstruction::SetupWorldGeometry()
 	new G4PVPlacement(0,
 					  G4ThreeVector(0.0, 0.0, placement_of_Soil), lv_Soil, "Soil", worldLogical, false, 0, checkOverlaps); // in the world
 
-	// Define the phantom container (10-cm margins from the bounding box of phantom)
-	// Define the phantom container ( 1 m x 1 m x 2 m)
-	//																	Phantomsize of => 55.7708, 29.1260, 176.0047 cm
+	// Container
 
 	G4Box *containerSolid = new G4Box("phantomBox", phantomSize.x() / 2 + 10. * cm, // 55.7708 /2 + 10cm = 37.8854
 									  phantomSize.y() / 2 + 10. * cm,				// 29.1260 / 2 + 10 cm = 24.563
@@ -155,12 +150,6 @@ void TETDetectorConstruction::SetupWorldGeometry()
 	container_logic->SetSmartless(0.5); // for optimization (default=2)
 
 	// SUS 409
-
-	G4Material *Carbon = G4NistManager::Instance()->FindOrBuildMaterial("G4_C");
-	G4Material *Cronium = G4NistManager::Instance()->FindOrBuildMaterial("G4_Cr");
-	G4Material *Nikel = G4NistManager::Instance()->FindOrBuildMaterial("G4_Ni");
-	G4Material *Sulfur = G4NistManager::Instance()->FindOrBuildMaterial("G4_S");
-
 	G4Material *SUS_409 = new G4Material("SUS_409", 7.82 * g / cm3, 9);
 
 	SUS_409->AddMaterial(Feric, 0.8671);
@@ -172,7 +161,6 @@ void TETDetectorConstruction::SetupWorldGeometry()
 	SUS_409->AddMaterial(Phosphorus, 0.0003);
 	SUS_409->AddMaterial(Sulfur, 0.0048);
 	SUS_409->AddMaterial(Titanium, 0.0075);
-	// done
 
 	// BoreHole
 	G4VSolid *BoreHole = new G4Tubs("BoreHole", 0.0 * cm, 10.16 * cm, 5.0 * m, 0 * deg, 360 * deg);
@@ -187,35 +175,25 @@ void TETDetectorConstruction::SetupWorldGeometry()
 	new G4PVPlacement(0, G4ThreeVector(0.0 * cm, 0.0 * cm, 250 * cm + height_of_soil - (height_of_World - height_of_soil)),
 					  lv_imaginary_BoreHole, "imaginary_BoreHole", worldLogical, false, 0, checkOverlaps); // done
 
-	//	G4double sonde_position = 1*m;
+	//	Sonde variables
 	G4double stainlessThcik = 1. * mm;
 	G4double source_shielding_thickness = 6 * cm;
 	G4double neutron_shielding_thickness = 20 * cm;
 	G4double housingLength = 220.1 * cm;
 	G4double sondeLength = housingLength - stainlessThcik;
-
-	//	G4double placement_of_Sonde = -115.1*cm + 500.*cm +(sonde_position)-(source_shielding_thickness*0.5)-(stainlessThcik);
-	//	G4double placement_of_Sonde = 115*cm + 500*cm +(sonde_position)-(source_shielding_thickness*0.5);
 	G4double sonde_center = 0.0 * cm;
 	G4double placement_of_sonde;
 
-	//  if (sonde_position == -50.*cm || sonde_position == 0.0*m || sonde_position == +100.0*cm || sonde_position == +50.0*cm){
 	G4cout << "Sonde position is : " << sonde_position / cm << G4endl;
-	// 0cm and -50cm
 
-	// upper_Housing_length = 230.2 * cm - (source_shielding_thickness) - (stainlessThcik) + sonde_position;
-	// lower_Housing_length = 230.2 * cm - upper_Housing_length;
 	upper_Housing_length = housingLength + sonde_position + 0.5 * source_shielding_thickness;
 	lower_Housing_length = housingLength - upper_Housing_length;
-
 	upper_Sonde_length = upper_Housing_length - stainlessThcik;
 	lower_Sonde_length = sondeLength - upper_Sonde_length;
 	G4cout << "upper housing length is : " << upper_Housing_length / cm << " cm" << G4endl;
 	G4cout << "lower housing length is : " << lower_Housing_length / cm << " cm" << G4endl;
 	G4cout << "upper sonde length is : " << upper_Sonde_length / cm << " cm" << G4endl;
 	G4cout << "lower sonde length is : " << lower_Sonde_length / cm << " cm" << G4endl;
-	// placement_of_sonde_10cm = -250*cm + 1.15*m  -5.0*cm + sonde_position;
-	// G4String Sonde_Center = 10.16-3.81 cm;
 
 	// above the ground
 	if (sonde_position > 0.0 * cm)
@@ -479,9 +457,10 @@ void TETDetectorConstruction::SetupWorldGeometry()
 		// lv_imaginary_BoreHole->SetVisAttributes(va_imaginary_BoreHole);
 	}
 
-	else if (sonde_position <= 20. * cm){
-					// -30
-		G4cout << " underground - 10.0 and - 20.0 cm " << G4endl;
+
+	else if (-10.0 * cm <= sonde_position && sonde_position <= -20. * cm ){
+		// - 10 cm
+		G4cout << " underground - 10.0 cm" << G4endl;
 
 		// upper housing
 		G4VSolid *upper_Housing = new G4Tubs("upper_Housing", 0.0 * cm, 3.91 * cm, upper_Housing_length * 0.5, 0 * deg, 360 * deg);
@@ -495,6 +474,8 @@ void TETDetectorConstruction::SetupWorldGeometry()
 		//		G4VPhysicalVolume* pv_upper_Housing =
 		new G4PVPlacement(0, G4ThreeVector(0., 0., -0.5 * stainlessThcik), lv_upper_Sonde, "upper_Sonde", lv_upper_Housing, false, 0, checkOverlaps);
 
+		// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 		// lower housing
 		G4VSolid *lower_Housing = new G4Tubs("lower_Housing", 0.0 * cm, 3.91 * cm, lower_Housing_length * 0.5, 0 * deg, 360 * deg);
 		G4LogicalVolume *lv_lower_Housing = new G4LogicalVolume(lower_Housing, SUS_409, "lower_Housing");
@@ -506,6 +487,8 @@ void TETDetectorConstruction::SetupWorldGeometry()
 		G4LogicalVolume *lv_lower_Sonde = new G4LogicalVolume(lower_Sonde, AIR, "lower_Sonde");
 		//		G4VPhysicalVolume* pv_lower_Housing =
 		new G4PVPlacement(0, G4ThreeVector(), lv_lower_Sonde, "lower_Sonde", lv_lower_Housing, false, 0, checkOverlaps);
+
+		// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 		// Source_shielding
 		G4Material *Tungsten = G4NistManager::Instance()->FindOrBuildMaterial("G4_W");
@@ -521,12 +504,27 @@ void TETDetectorConstruction::SetupWorldGeometry()
 		//		G4VPhysicalVolume* pv_Source =
 		new G4PVPlacement(0, G4ThreeVector(), lv_Source, "Source", lv_Source_Shielding, false, 0, checkOverlaps);
 
-		// Neutron_shielding
-		G4VSolid *Neutron_Shielding = new G4Tubs("Neutron_Shielding", 0.0 * cm, 3.81 * cm, neutron_shielding_thickness * 0.5, 0 * deg, 360 * deg);
-		G4LogicalVolume *lv_Neutron_Shielding = new G4LogicalVolume(Neutron_Shielding, Tungsten, "Neutron_Shielding");
+		// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		G4double UpperNeutronShieldLenght = (neutron_shielding_thickness - lower_Sonde_length)
+		G4double LowerNeutronShieldLenght = (neutron_shielding_thickness - halfUpperNeutronShieldLenght)
+		G4double halfUpperNeutronShieldLenght = UpperNeutronShieldLenght * 0.5
+		G4double halfLowerNeutronShieldLenght = LowerNeutronShieldLenght * 0.5
+		// upper Neutron_shielding
+		G4VSolid *upperNeutron_Shielding = new G4Tubs("upperNeutron_Shielding", 0.0 * cm, 3.81 * cm, halfUpperNeutronShieldLenght, 0 * deg, 360 * deg);
+		G4LogicalVolume *lv_upperNeutron_Shielding = new G4LogicalVolume(upperNeutron_Shielding, Tungsten, "upperNeutron_Shielding");
 		//		G4VPhysicalVolume* pv_Neutron_shielding =
-		new G4PVPlacement(0, G4ThreeVector(0.0 * cm, 0.0 * cm, (-lower_Sonde_length * 0.5 + neutron_shielding_thickness * 0.5)),
-						  lv_Neutron_Shielding, "Neutron_Shielding", lv_lower_Sonde, false, 0, checkOverlaps);
+		new G4PVPlacement(0, G4ThreeVector(0.0 * cm, 0.0 * cm, (-upper_Sonde_length * 0.5 + halfUpperNeutronShieldLenght)),
+						  lv_upperNeutron_Shielding, "upperNeutron_Shielding", lv_upper_Sonde, false, 0, checkOverlaps);
+
+		// lower Neutron_shielding
+		G4VSolid *lowerNeutron_Shielding = new G4Tubs("lowerNeutron_Shielding", 0.0 * cm, 3.81 * cm, halfLowerNeutronShieldLenght, 0 * deg, 360 * deg);
+		G4LogicalVolume *lv_lowerNeutron_Shielding = new G4LogicalVolume(lowerNeutron_Shielding, Tungsten, "lowerNeutron_Shielding");
+		//		G4VPhysicalVolume* pv_Neutron_shielding =
+		new G4PVPlacement(0, G4ThreeVector(0.0 * cm, 0.0 * cm, (+lower_Sonde_length * 0.5 - halfLowerNeutronShieldLenght)),
+						  lv_lowerNeutron_Shielding, "lowerNeutron_Shielding", lv_lower_Sonde, false, 0, checkOverlaps);
+
+		// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 		// Near_Detector (Stilbene)
 		G4double near_detector_distance = 30 * cm;
@@ -545,7 +543,7 @@ void TETDetectorConstruction::SetupWorldGeometry()
 		new G4PVPlacement(0, G4ThreeVector(0.0 * cm, 0.0 * cm, (-upper_Sonde_length * 0.5 + far_detector_distance + sonde_position + 3.81 * cm)),
 						  lv_Far_Detector, "Far_Detector", lv_upper_Sonde, false, 0, checkOverlaps);
 	}
-	//	underground / 2022.04.06 by HSB
+
 	else if (sonde_position == -30.0 * cm)
 	{
 			// -30
