@@ -132,7 +132,7 @@ if __name__ == "__main__":
 
         modifyExample(numCores, nps)
         modifyAmbeSource(pos)
-        modifyTETDetector(pos)
+        modifyTETDetector(pos, posture=posture)
 
         try:
             makedirs(outputPath)
