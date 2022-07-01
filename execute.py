@@ -75,8 +75,13 @@ def modifyAmbeSource(pos):
         f.write("/control/execute hist_source_point.dat\n")
         f.close()
 
-def modifyTETDetector(pos):
+def modifyTETDetector(pos, posture):
+    if posture == "sp":
+        shift = 80
+    else:
+        shift = 0
     system(f"sed -i \"68s/.*/\tG4double sonde_position = {pos}. * cm;/g\" ./src/TETDetectorConstruction.cc")
+    system(f"sed -i \"151s/.*/\tnew G4PVPlacement(0, G4ThreeVector(PhantomBoxX, PhantomBoxY+{shift}. * cm, PhantomBoxZ), container_logic, \"PhantomPhysical\", worldLogical, false, 0, checkOverlaps);/g\" ./src/TETDetectorConstruction.cc")
 
 def log(workingDir, txt):
     file = join(workingDir, "log.txt")
