@@ -527,10 +527,10 @@ void TETDetectorConstruction::SetupWorldGeometry()
 
 		// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-		G4double UpperNeutronShieldLenght = (neutron_shielding_thickness - lower_Sonde_length)
-		G4double LowerNeutronShieldLenght = (neutron_shielding_thickness - halfUpperNeutronShieldLenght)
-		G4double halfUpperNeutronShieldLenght = UpperNeutronShieldLenght * 0.5
-		G4double halfLowerNeutronShieldLenght = LowerNeutronShieldLenght * 0.5
+		G4double UpperNeutronShieldLenght = (neutron_shielding_thickness - lower_Sonde_length);
+		G4double LowerNeutronShieldLenght = (neutron_shielding_thickness - UpperNeutronShieldLenght);
+		G4double halfUpperNeutronShieldLenght = UpperNeutronShieldLenght * 0.5;
+		G4double halfLowerNeutronShieldLenght = LowerNeutronShieldLenght * 0.5;
 		// upper Neutron_shielding
 		G4VSolid *upperNeutron_Shielding = new G4Tubs("upperNeutron_Shielding", 0.0 * cm, 3.81 * cm, halfUpperNeutronShieldLenght, 0 * deg, 360 * deg);
 		G4LogicalVolume *lv_upperNeutron_Shielding = new G4LogicalVolume(upperNeutron_Shielding, Tungsten, "upperNeutron_Shielding");
