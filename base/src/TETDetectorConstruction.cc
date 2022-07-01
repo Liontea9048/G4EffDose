@@ -148,8 +148,7 @@ void TETDetectorConstruction::SetupWorldGeometry()
 	G4double PhantomBoxZ = 98.00236 * cm + (height_of_soil + centerofSoil);
 
 	//	G4VPhysicalVolume* container_physical =
-	new G4PVPlacement(0,
-					  G4ThreeVector(PhantomBoxX, PhantomBoxY, PhantomBoxZ), container_logic, "PhantomPhysical", worldLogical, false, 0, checkOverlaps);
+	new G4PVPlacement(0, G4ThreeVector(PhantomBoxX, PhantomBoxY, PhantomBoxZ), container_logic, "PhantomPhysical", worldLogical, false, 0, checkOverlaps);
 
 	container_logic->SetOptimisation(TRUE);
 	container_logic->SetSmartless(0.5); // for optimization (default=2)
