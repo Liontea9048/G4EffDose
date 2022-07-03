@@ -195,11 +195,15 @@ void TETDetectorConstruction::SetupWorldGeometry()
 	G4cout << "upper sonde length is : " << upper_Sonde_length / cm << " cm" << G4endl;
 	G4cout << "lower sonde length is : " << lower_Sonde_length / cm << " cm" << G4endl;
 
+	placement_of_sonde = -250. * cm + (housingLength * 0.5) + source_shielding_thickness * 0.5 + sonde_position;
+	placement_of_upper_Housing = -250. * cm + (upper_Housing_length * 0.5);
+	placement_of_lower_Housing = 500. * cm - (lower_Housing_length * 0.5);
+
 	// above the ground
 	if (sonde_position > 0.0 * cm)
 	{
 		// placement_of_sonde = -250. * cm + (230.2 * cm * 0.5) - stainlessThcik - (source_shielding_thickness * 0.5) + sonde_position;
-		placement_of_sonde = -250. * cm + (housingLength * 0.5) + source_shielding_thickness * 0.5 + sonde_position;
+		// placement_of_sonde = -250. * cm + (housingLength * 0.5) + source_shielding_thickness * 0.5 + sonde_position;
 		G4cout << "source's center is placed at : " << placement_of_sonde / cm << " cm" << G4endl;
 
 		// Housing
