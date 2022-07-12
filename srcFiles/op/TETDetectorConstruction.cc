@@ -27,7 +27,6 @@
 // \file   MRCP_GEANT4/External/src/TETDetectorConstruction.cc
 // \author Sangbin Han
 
-
 #include "TETDetectorConstruction.hh"
 #include "G4VSolid.hh"
 #include "G4Tubs.hh"
@@ -184,30 +183,33 @@ void TETDetectorConstruction::SetupWorldGeometry()
 	G4double sonde_center = 0.0 * cm;
 	G4double placement_of_sonde;
 
-	G4cout << "Sonde position is : " << sonde_position / cm << G4endl;
-
 	upper_Housing_length = housingLength + sonde_position + 0.5 * source_shielding_thickness;
 	lower_Housing_length = housingLength - upper_Housing_length;
+	
 	upper_Sonde_length = upper_Housing_length - stainlessThcik;
 	lower_Sonde_length = sondeLength - upper_Sonde_length;
-	G4cout << "upper housing length is : " << upper_Housing_length / cm << " cm" << G4endl;
-	G4cout << "lower housing length is : " << lower_Housing_length / cm << " cm" << G4endl;
-	G4cout << "upper sonde length is : " << upper_Sonde_length / cm << " cm" << G4endl;
-	G4cout << "lower sonde length is : " << lower_Sonde_length / cm << " cm" << G4endl;
 
 	placement_of_sonde = -250. * cm + (housingLength * 0.5) + source_shielding_thickness * 0.5 + sonde_position;
 	placement_of_upper_Housing = -250. * cm + (upper_Housing_length * 0.5);
 	placement_of_lower_Housing = 500. * cm - (lower_Housing_length * 0.5);
 
+	G4cout << "Sonde position is : " << sonde_position / cm << G4endl;
+	G4cout << "upper housing length is : " << upper_Housing_length / cm << " cm" << G4endl;
+	G4cout << "lower housing length is : " << lower_Housing_length / cm << " cm" << G4endl;
+	G4cout << "upper sonde length is : " << upper_Sonde_length / cm << " cm" << G4endl;
+	G4cout << "lower sonde length is : " << lower_Sonde_length / cm << " cm" << G4endl;
+	G4cout << "Placement of sonde is : " << (placement_of_sonde / cm) + 250. * cm << " cm" << G4endl;
+	G4cout << "Placement of upperhousing is : " << (placement_of_upper_Housing / cm) + 250. * cm << " cm" << G4endl;
+	G4cout << "Placement of lowerhousing is : " << (placement_of_lower_Housing / cm) - 500. * cm << " cm" << G4endl;
+	G4cout << "Position of bottom surface of upper Housing is : " << (placement_of_upper_Housing / cm) + 250. * cm - upper_Housing_length/cm * 0.5 << " cm" << G4endl;
+	G4cout << "Position of top surface of lower Housing is : " << (placement_of_lower_Housing / cm) - 500. * cm + lower_Housing_length/cm * 0.5 << " cm" << G4endl;
+
 	// above the ground
 	if (sonde_position > 0.0 * cm)
 	{
-		// placement_of_sonde = -250. * cm + (230.2 * cm * 0.5) - stainlessThcik - (source_shielding_thickness * 0.5) + sonde_position;
-		// placement_of_sonde = -250. * cm + (housingLength * 0.5) + source_shielding_thickness * 0.5 + sonde_position;
 		G4cout << "source's center is placed at : " << placement_of_sonde / cm << " cm" << G4endl;
 
 		// Housing
-		// G4VSolid *Housing = new G4Tubs("Sonde", 0.0 * cm, 3.91 * cm, 1.15 * m + 1. * mm, 0 * deg, 360 * deg);
 		G4VSolid *Housing = new G4Tubs("Sonde", 0.0 * cm, 3.91 * cm, 0.5 * housingLength, 0 * deg, 360 * deg);
 		G4LogicalVolume *lv_Housing = new G4LogicalVolume(Housing, SUS_409, "Housing");
 		//		G4VPhysicalVolume* pv_Sonde =
@@ -323,10 +325,7 @@ void TETDetectorConstruction::SetupWorldGeometry()
 	// not used 2022.04.06 by HSB
 	else if (sonde_position == 0. * cm)
 	{
-		G4cout << " 0 cm " << G4endl;
-		G4cout << " 0 cm " << G4endl;
 		// Housing
-		// G4VSolid *Housing = new G4Tubs("Sonde", 0.0 * cm, 3.91 * cm, 1.15 * m + 1. * mm, 0 * deg, 360 * deg);
 		G4VSolid *Housing = new G4Tubs("Sonde", 0.0 * cm, 3.91 * cm, 0.5 * housingLength, 0 * deg, 360 * deg);
 		G4LogicalVolume *lv_Housing = new G4LogicalVolume(Housing, SUS_409, "Housing");
 		//		G4VPhysicalVolume* pv_Sonde =
@@ -357,11 +356,11 @@ void TETDetectorConstruction::SetupWorldGeometry()
 		// Am-Be source
 		G4VSolid *upper_Source = new G4Tubs("upper_Source", 0.0 * cm, 1.25 * cm, 2.5 * cm * 0.5, 0 * deg, 360 * deg);
 		G4LogicalVolume *lv_upper_Source = new G4LogicalVolume(upper_Source, AmBe, "upper_Source");
-		new G4PVPlacement(0, G4ThreeVector(), lv_upper_Source, "upper_Source", lv_upper_Source_Shielding, false, 0, checkOverlaps);
+		new G4PVPlacement(0, G4ThreeVector(0., 0., -0.25*cm), lv_upper_Source, "upper_Source", lv_upper_Source_Shielding, false, 0, checkOverlaps);
 
 		G4VSolid *lower_Source = new G4Tubs("lower_Source", 0.0 * cm, 1.25 * cm, 2.5 * cm * 0.5, 0 * deg, 360 * deg);
 		G4LogicalVolume *lv_lower_Source = new G4LogicalVolume(lower_Source, AmBe, "lower_Source");
-		new G4PVPlacement(0, G4ThreeVector(), lv_lower_Source, "lower_Source", lv_lower_Source_Shielding, false, 0, checkOverlaps);
+		new G4PVPlacement(0, G4ThreeVector(0., 0., +0.25*cm), lv_lower_Source, "lower_Source", lv_lower_Source_Shielding, false, 0, checkOverlaps);
 
 		// Neutron_shielding
 		G4VSolid *Neutron_Shielding = new G4Tubs("Neutron_Shielding", 0.0 * cm, 3.81 * cm, neutron_shielding_thickness * 0.5, 0 * deg, 360 * deg);
