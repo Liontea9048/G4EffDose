@@ -1,0 +1,17 @@
+# Example macro file to run in the batch mode
+
+# Set the verbose
+/run/verbose 0
+/tracking/verbose 0
+
+# Set the number of threads for multi-threading mode
+/run/numberOfThreads 10
+
+# Initialize
+/run/initialize
+
+# Source setting
+/control/execute AmbeSource.mac
+
+# Set the nps
+/run/beamOn 100000000

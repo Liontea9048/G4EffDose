@@ -1,0 +1,40 @@
+# GeneralParticleSource :
+# isotropic 1 MeV-gamma point source at (0, -1 m, 0)
+#/gps/ang/type iso
+#/gps/energy 14 MeV
+#/gps/particle gamma
+#/gps/pos/type Point
+#/gps/pos/centre 0 -2. 0 m
+
+
+# GeneralParticleSource :
+# isotropic 1 MeV-gamma point source at (0, -1 m, 0)
+/gps/particle neutron
+/gps/pos/type Volume
+/gps/pos/shape Sphere
+/gps/pos/radius 0.1 mm
+/gps/ang/type iso
+
+# Source Center position
+/gps/pos/centre 0.0 6.25 360.0 cm # at over 10 cm
+#/gps/pos/centre 0.0 6.25 350.0 cm # at 0 m
+#/gps/pos/centre 0.0 6.25 250.0 cm # at 1 m
+#/gps/pos/centre 0.0 6.25 150.0 cm # at 2 m
+#/gps/pos/centre 0.0 6.25 50.0  cm # at 3 m
+
+# Source Energy 
+/gps/energy 14.0 MeV # for mono enegy
+#/gps/ene/type Lin	# for uniform energy from 0.01 MeV to 14 MeV
+#/gps/ene/intercept 1
+#/gps/ene/gradient 0
+#/gps/ene/min 0.01 MeV
+#/gps/ene/min 1.0 eV
+#/gps/ene/max 14 MeV 
+
+
+
+
+
+
+
+
