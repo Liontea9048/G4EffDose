@@ -1,7 +1,0 @@
-/home/liontea/sonde/G4EffDose/op/100/CMakeFiles/install/strip.dir
-/home/liontea/sonde/G4EffDose/op/100/CMakeFiles/install/local.dir
-/home/liontea/sonde/G4EffDose/op/100/CMakeFiles/install.dir
-/home/liontea/sonde/G4EffDose/op/100/CMakeFiles/list_install_components.dir
-/home/liontea/sonde/G4EffDose/op/100/CMakeFiles/rebuild_cache.dir
-/home/liontea/sonde/G4EffDose/op/100/CMakeFiles/edit_cache.dir
-/home/liontea/sonde/G4EffDose/op/100/CMakeFiles/External.dir
