@@ -138,7 +138,7 @@ if __name__ == "__main__":
                 system(f"cp -rf {baseOrfluxDir}/* ./")
                 
                 # cp src files suitable for the case
-                srcFileDir = join(srcFileDir, f"flux/{posture}")
+                srcFileDir = join(srcFileDir, f"flux/flux_{posture}")
                 system(f"cp -rf {srcFileDir}/* ./src")
 
                 modifyExample(numCores, nps)
@@ -174,7 +174,7 @@ if __name__ == "__main__":
                 system(f"cp -rf {baseOrfluxDir}/* ./")
                 
                 # cp src files suitable for the case
-                srcFileDir = join(srcFileDir, f"normal/{posture}")
+                srcFileDir = join(srcFileDir, f"normal/n_{posture}")
                 system(f"cp -rf {srcFileDir}/* ./src")
 
                 modifyExample(numCores, nps)
