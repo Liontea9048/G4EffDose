@@ -87,8 +87,6 @@ private:
 	FLUXMAP cFluxMap;
 	FLUXMAP cFluxMap_n1;
 	FLUXMAP cFluxMap_n50;
-	FLUXMAP cFluxMap_n1;
-	EDEPMAP cFluxMap_n50;
 	FLUXMAP cFluxMap_gem;
 	FLUXMAP cFluxMap_hp;
 	FLUXMAP cFluxMap_alpha;

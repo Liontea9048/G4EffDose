@@ -999,7 +999,7 @@ void TETDetectorConstruction::ConstructSDandField()
 
 	// Cell flux for gamma, electron, and muons using PSEnergyDeposit ( no need to separate depending on the energy)
 	primitive = new TETPSTrackLength("cFLux_gem", tetData);
-	gem_flux = new G4SDParticleWithEnergyFilter("gem_flux");
+	auto gem_flux = new G4SDParticleWithEnergyFilter("gem_flux");
 	gem_flux->add("gamma");
 	gem_flux->add("e-");
 	gem_flux->add("mu+");
@@ -1009,7 +1009,7 @@ void TETDetectorConstruction::ConstructSDandField()
 
 	// Cell flux for proton and pions using PSEnergyDeposit ( no need to separate depending on the energy)
 	primitive = new TETPSTrackLength("cFlux_hp", tetData);
-	hp_flux = new G4SDParticleWithEnergyFilter("hp_flux");
+	auto hp_flux = new G4SDParticleWithEnergyFilter("hp_flux");
 	hp_flux->add("proton");
 	hp_flux->add("pi+");
 	hp_flux->add("pi-");
@@ -1018,7 +1018,7 @@ void TETDetectorConstruction::ConstructSDandField()
 
 	// Cell flux for alpha and other particles using PSEnergyDeposit ( no need to separate depending on the energy)
 	primitive = new TETPSEnergyDeposit("cFlux_alpha", tetData);
-	alpha_flux = new G4SDParticleWithEnergyFilter("alpha_flux");
+	auto alpha_flux = new G4SDParticleWithEnergyFilter("alpha_flux");
 	alpha_flux->add("alpha");
 	alpha_flux->add("GenericIon");
 	primitive->SetFilter(alpha_flux);
