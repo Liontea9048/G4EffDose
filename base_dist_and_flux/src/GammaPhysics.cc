@@ -23,64 +23,40 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// TETRunAction.hh
-// \file   MRCP_GEANT4/External/include/TETRunAction.hh
-// \author Haegin Han
+// GammaPhysics.cc
+// \file   MRCP_GEANT4/External/include/GammaPhysics.cc
 //
 
-#ifndef TETRunAction_h
-#define TETRunAction_h 1
 
-#include <ostream>
-#include <fstream>
-#include <map>
 
-#include "G4RunManager.hh"
-#include "G4UnitsTable.hh"
-#include "G4UserRunAction.hh"
-#include "G4SystemOfUnits.hh"
+#include "GammaPhysics.hh"
 
-#include "TETRun.hh"
-#include "TETPrimaryGeneratorAction.hh"
-#include "TETModelImport.hh"
+GammaPhysics::GammaPhysics(const G4String& name)
+:G4VPhysicsConstructor(name)
+{}
 
-// *********************************************************************
-// The main function of this UserRunAction class is to produce the result
-// data and print them.
-// -- GenerateRun: Generate TETRun class which will calculate the sum of
-//                  energy deposition.
-// -- BeginOfRunAction: Set the RunManager to print the progress at the
-//                      interval of 10%.
-// -- EndOfRunAction: Print the run result by G4cout and std::ofstream.
-//  └-- PrintResult: Method to print the result.
-// *********************************************************************
 
-class TETRunAction : public G4UserRunAction
+GammaPhysics::~GammaPhysics()
+{ }
+
+
+void GammaPhysics::ConstructProcess()
 {
-public:
-	TETRunAction(TETModelImport* tetData, G4String output);
-	virtual ~TETRunAction();
+	G4ProcessManager* pManager = G4Gamma::Gamma()->GetProcessManager();
+	pManager->SetVerboseLevel(0);
+//	auto process = pManager->GetProcess();
+	//
+	G4PhotoNuclearProcess* process = new G4PhotoNuclearProcess();
+	//
+	G4CascadeInterface* bertini = new G4CascadeInterface();
+	bertini->SetMaxEnergy(100*GeV);
+	process->RegisterMe(bertini);
 
-public:
-	virtual G4Run* GenerateRun();
-	virtual void BeginOfRunAction(const G4Run*);
-	virtual void EndOfRunAction(const G4Run*);
-
-	void PrintResult(std::ostream &out);
-	void PrintResult_flux(std::ostream &out);
-  
-private:
-	// std::chrono::_V2::system_clock::time_point start;
-	TETModelImport* tetData;
-	TETRun*         fRun;
-	G4int           numOfEvent;
-	G4int           runID;
-	G4String        outputFile;
-};
-
-#endif
-
-
-
+	// G4EmLivermorePhysics* liverMore = new G4EmLivermorePhysics();
+	// liverMore->SetMaxEnergy(100*GeV);
+	// process->RegisterMe(liverMore);
+	//
+	pManager->AddDiscreteProcess(process);
+}
 
 

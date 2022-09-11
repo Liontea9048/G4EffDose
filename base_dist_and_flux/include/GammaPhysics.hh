@@ -23,64 +23,37 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// TETRunAction.hh
-// \file   MRCP_GEANT4/External/include/TETRunAction.hh
-// \author Haegin Han
+// GammaPhysics.hh
+// \file   MRCP_GEANT4/External/include/GammaPhysics.hh
 //
 
-#ifndef TETRunAction_h
-#define TETRunAction_h 1
+#ifndef GammaPhysics_h
+#define GammaPhysics_h 1
 
-#include <ostream>
-#include <fstream>
-#include <map>
-
-#include "G4RunManager.hh"
-#include "G4UnitsTable.hh"
-#include "G4UserRunAction.hh"
+#include "globals.hh"
+#include "G4VPhysicsConstructor.hh"
+#include "G4ParticleDefinition.hh"
+#include "G4ProcessManager.hh"
+#include "G4PhotoNuclearProcess.hh"
+#include "G4CascadeInterface.hh"
+#include "G4EmLivermorePhysics.hh"
 #include "G4SystemOfUnits.hh"
 
-#include "TETRun.hh"
-#include "TETPrimaryGeneratorAction.hh"
-#include "TETModelImport.hh"
 
-// *********************************************************************
-// The main function of this UserRunAction class is to produce the result
-// data and print them.
-// -- GenerateRun: Generate TETRun class which will calculate the sum of
-//                  energy deposition.
-// -- BeginOfRunAction: Set the RunManager to print the progress at the
-//                      interval of 10%.
-// -- EndOfRunAction: Print the run result by G4cout and std::ofstream.
-//  └-- PrintResult: Method to print the result.
-// *********************************************************************
 
-class TETRunAction : public G4UserRunAction
+class GammaPhysics : public G4VPhysicsConstructor
 {
-public:
-	TETRunAction(TETModelImport* tetData, G4String output);
-	virtual ~TETRunAction();
+  public:
+	GammaPhysics(const G4String& name="gamma");
+	virtual ~GammaPhysics();
 
-public:
-	virtual G4Run* GenerateRun();
-	virtual void BeginOfRunAction(const G4Run*);
-	virtual void EndOfRunAction(const G4Run*);
-
-	void PrintResult(std::ostream &out);
-	void PrintResult_flux(std::ostream &out);
-  
-private:
-	// std::chrono::_V2::system_clock::time_point start;
-	TETModelImport* tetData;
-	TETRun*         fRun;
-	G4int           numOfEvent;
-	G4int           runID;
-	G4String        outputFile;
+  public:
+    virtual void ConstructParticle() { };
+    virtual void ConstructProcess();
+  private:
 };
 
+
+
 #endif
-
-
-
-
 

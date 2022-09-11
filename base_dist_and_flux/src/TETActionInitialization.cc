@@ -23,64 +23,30 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// TETRunAction.hh
-// \file   MRCP_GEANT4/External/include/TETRunAction.hh
+// TETActionInitialization.cc
+// \file   MRCP_GEANT4/External/src/TETActionInitialization.cc
 // \author Haegin Han
 //
 
-#ifndef TETRunAction_h
-#define TETRunAction_h 1
+#include "TETActionInitialization.hh"
 
-#include <ostream>
-#include <fstream>
-#include <map>
+TETActionInitialization::TETActionInitialization(TETModelImport* _tetData, G4String _output)
+ : G4VUserActionInitialization(), tetData(_tetData), output(_output)
+{}
 
-#include "G4RunManager.hh"
-#include "G4UnitsTable.hh"
-#include "G4UserRunAction.hh"
-#include "G4SystemOfUnits.hh"
+TETActionInitialization::~TETActionInitialization()
+{}
 
-#include "TETRun.hh"
-#include "TETPrimaryGeneratorAction.hh"
-#include "TETModelImport.hh"
-
-// *********************************************************************
-// The main function of this UserRunAction class is to produce the result
-// data and print them.
-// -- GenerateRun: Generate TETRun class which will calculate the sum of
-//                  energy deposition.
-// -- BeginOfRunAction: Set the RunManager to print the progress at the
-//                      interval of 10%.
-// -- EndOfRunAction: Print the run result by G4cout and std::ofstream.
-//  └-- PrintResult: Method to print the result.
-// *********************************************************************
-
-class TETRunAction : public G4UserRunAction
+void TETActionInitialization::BuildForMaster() const
 {
-public:
-	TETRunAction(TETModelImport* tetData, G4String output);
-	virtual ~TETRunAction();
+	SetUserAction(new TETRunAction(tetData, output));
+}
 
-public:
-	virtual G4Run* GenerateRun();
-	virtual void BeginOfRunAction(const G4Run*);
-	virtual void EndOfRunAction(const G4Run*);
-
-	void PrintResult(std::ostream &out);
-	void PrintResult_flux(std::ostream &out);
-  
-private:
-	// std::chrono::_V2::system_clock::time_point start;
-	TETModelImport* tetData;
-	TETRun*         fRun;
-	G4int           numOfEvent;
-	G4int           runID;
-	G4String        outputFile;
-};
-
-#endif
-
-
-
-
+void TETActionInitialization::Build() const
+{
+	// initialise UserAction classes
+	SetUserAction(new TETPrimaryGeneratorAction());
+	SetUserAction(new TETRunAction(tetData, output));
+	SetUserAction(new TETSteppingAction);
+}  
 

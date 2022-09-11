@@ -23,64 +23,40 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// TETRunAction.hh
-// \file   MRCP_GEANT4/External/include/TETRunAction.hh
-// \author Haegin Han
+// NeutronHPMessenger.cc
+// \file   MRCP_GEANT4/External/include/NeutronHPMessenger.cc
 //
 
-#ifndef TETRunAction_h
-#define TETRunAction_h 1
+#include "NeutronHPMessenger.hh"
 
-#include <ostream>
-#include <fstream>
-#include <map>
+NeutronHPMessenger::NeutronHPMessenger(HadronElasticPhysicsHP* phys)
+:G4UImessenger(),fNeutronPhysics(phys),
+ fPhysDir(0), fThermalCmd(0)
+{ 
+	fPhysDir = new G4UIdirectory("/hadron/phys/");
+	fPhysDir->SetGuidance("physics list commands");
 
-#include "G4RunManager.hh"
-#include "G4UnitsTable.hh"
-#include "G4UserRunAction.hh"
-#include "G4SystemOfUnits.hh"
+	fThermalCmd = new G4UIcmdWithABool("/hadron/phys/thermalScattering",this);
+	fThermalCmd->SetGuidance("set thermal scattering model");
+	fThermalCmd->SetParameterName("thermal",true);
+	fThermalCmd->AvailableForStates(G4State_PreInit);
+}
 
-#include "TETRun.hh"
-#include "TETPrimaryGeneratorAction.hh"
-#include "TETModelImport.hh"
 
-// *********************************************************************
-// The main function of this UserRunAction class is to produce the result
-// data and print them.
-// -- GenerateRun: Generate TETRun class which will calculate the sum of
-//                  energy deposition.
-// -- BeginOfRunAction: Set the RunManager to print the progress at the
-//                      interval of 10%.
-// -- EndOfRunAction: Print the run result by G4cout and std::ofstream.
-//  └-- PrintResult: Method to print the result.
-// *********************************************************************
 
-class TETRunAction : public G4UserRunAction
+NeutronHPMessenger::~NeutronHPMessenger()
 {
-public:
-	TETRunAction(TETModelImport* tetData, G4String output);
-	virtual ~TETRunAction();
-
-public:
-	virtual G4Run* GenerateRun();
-	virtual void BeginOfRunAction(const G4Run*);
-	virtual void EndOfRunAction(const G4Run*);
-
-	void PrintResult(std::ostream &out);
-	void PrintResult_flux(std::ostream &out);
-  
-private:
-	// std::chrono::_V2::system_clock::time_point start;
-	TETModelImport* tetData;
-	TETRun*         fRun;
-	G4int           numOfEvent;
-	G4int           runID;
-	G4String        outputFile;
-};
-
-#endif
+	delete fThermalCmd;
+	delete fPhysDir;
+}
 
 
-
+void NeutronHPMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
+{   
+	if (command == fThermalCmd)
+	{
+		fNeutronPhysics->SetThermalPhysics(fThermalCmd->GetNewBoolValue(newValue));
+	}
+}
 
 

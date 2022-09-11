@@ -1,4 +1,3 @@
-//
 // ********************************************************************
 // * License and Disclaimer                                           *
 // *                                                                  *
@@ -23,64 +22,46 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// TETRunAction.hh
-// \file   MRCP_GEANT4/External/include/TETRunAction.hh
-// \author Haegin Han
+// 	Author: yskim
 //
 
-#ifndef TETRunAction_h
-#define TETRunAction_h 1
+#ifndef SensitiveDetector_hh_
+#define SensitiveDetector_hh_
 
-#include <ostream>
-#include <fstream>
-#include <map>
-
+#include "G4VSensitiveDetector.hh"
+#include "G4Step.hh"
+#include "G4Event.hh"
 #include "G4RunManager.hh"
-#include "G4UnitsTable.hh"
-#include "G4UserRunAction.hh"
 #include "G4SystemOfUnits.hh"
-
-#include "TETRun.hh"
-#include "TETPrimaryGeneratorAction.hh"
+// #include "G4THitsMap.hh"
+#include "TETPSEnergyDeposit.hh"
 #include "TETModelImport.hh"
+#include "G4THitsCollection.hh"
 
-// *********************************************************************
-// The main function of this UserRunAction class is to produce the result
-// data and print them.
-// -- GenerateRun: Generate TETRun class which will calculate the sum of
-//                  energy deposition.
-// -- BeginOfRunAction: Set the RunManager to print the progress at the
-//                      interval of 10%.
-// -- EndOfRunAction: Print the run result by G4cout and std::ofstream.
-//  └-- PrintResult: Method to print the result.
-// *********************************************************************
+class G4HCofThisEvent;
+class G4TouchableHistory;
 
-class TETRunAction : public G4UserRunAction
+class TETSensitiveDetector: public G4VSensitiveDetector
 {
 public:
-	TETRunAction(TETModelImport* tetData, G4String output);
-	virtual ~TETRunAction();
+	TETSensitiveDetector(const G4String& name, const G4String& hitsCollectionName, TETModelImport* _tetData);
+	// void SensitiveDetector_manual(G4String name, G4String hitsCollectionName);
+	// virtual void ~SensitiveDetector_manual();
+	virtual ~TETSensitiveDetector();
 
-public:
-	virtual G4Run* GenerateRun();
-	virtual void BeginOfRunAction(const G4Run*);
-	virtual void EndOfRunAction(const G4Run*);
-
-	void PrintResult(std::ostream &out);
-	void PrintResult_flux(std::ostream &out);
-  
+	void Initialize(G4HCofThisEvent* HCE);
+	G4bool ProcessHits(G4Step* aStep, G4TouchableHistory*);
+	void EndOfEvent(G4HCofThisEvent* HCE);
 private:
-	// std::chrono::_V2::system_clock::time_point start;
+	G4int organID;
+	G4double particleEnergy;
+	G4double eDep;
+	// G4int HCID;
+	G4THitsMap<G4double>* EvtMap_manual;
+	// G4THitsCollection<G4VHit> EvtMap_manual;
+	// TETMyHitsCollection* fHitsCollection;
 	TETModelImport* tetData;
-	TETRun*         fRun;
-	G4int           numOfEvent;
-	G4int           runID;
-	G4String        outputFile;
+
 };
 
 #endif
-
-
-
-
-

@@ -23,64 +23,42 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// TETRunAction.hh
-// \file   MRCP_GEANT4/External/include/TETRunAction.hh
+// TETPSEnergyDeposit.hh
+// \file   MRCP_GEANT4/External/include/TETPSEnergyDeposit.hh
 // \author Haegin Han
 //
 
-#ifndef TETRunAction_h
-#define TETRunAction_h 1
+#ifndef TETPSEnergyDeposit_h
+#define TETPSEnergyDeposit_h 1
 
-#include <ostream>
-#include <fstream>
-#include <map>
-
-#include "G4RunManager.hh"
-#include "G4UnitsTable.hh"
-#include "G4UserRunAction.hh"
-#include "G4SystemOfUnits.hh"
-
-#include "TETRun.hh"
-#include "TETPrimaryGeneratorAction.hh"
+#include "G4PSEnergyDeposit.hh"
 #include "TETModelImport.hh"
 
 // *********************************************************************
-// The main function of this UserRunAction class is to produce the result
-// data and print them.
-// -- GenerateRun: Generate TETRun class which will calculate the sum of
-//                  energy deposition.
-// -- BeginOfRunAction: Set the RunManager to print the progress at the
-//                      interval of 10%.
-// -- EndOfRunAction: Print the run result by G4cout and std::ofstream.
-//  └-- PrintResult: Method to print the result.
+// This is the scorer based on G4PSEnergyDeposit class.
+// -- GetIndex: Return the organ ID instead of copy number automatically
+//              given by Parameterisation geometry.
 // *********************************************************************
 
-class TETRunAction : public G4UserRunAction
+class TETPSEnergyDeposit : public G4PSEnergyDeposit
 {
-public:
-	TETRunAction(TETModelImport* tetData, G4String output);
-	virtual ~TETRunAction();
+   public:
+      TETPSEnergyDeposit(G4String name,TETModelImport* _tetData);
+      virtual ~TETPSEnergyDeposit();
+    //   virtual void Initialize(G4HCofThisEvent*);
+      
 
-public:
-	virtual G4Run* GenerateRun();
-	virtual void BeginOfRunAction(const G4Run*);
-	virtual void EndOfRunAction(const G4Run*);
+  protected:
+      virtual G4int GetIndex(G4Step*);
+    //   virtual G4bool ProcessHits(G4Step*,G4TouchableHistory*);
+      
+      
 
-	void PrintResult(std::ostream &out);
-	void PrintResult_flux(std::ostream &out);
-  
-private:
-	// std::chrono::_V2::system_clock::time_point start;
-	TETModelImport* tetData;
-	TETRun*         fRun;
-	G4int           numOfEvent;
-	G4int           runID;
-	G4String        outputFile;
+  private:
+      TETModelImport* tetData;
+    //   G4int HCID;
+    //   G4THitsMap<G4double>* EvtMap;
 };
 
 #endif
-
-
-
-
 

@@ -23,64 +23,55 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// TETRunAction.hh
-// \file   MRCP_GEANT4/External/include/TETRunAction.hh
+// TETParameterisation.cc
+// \file   MRCP_GEANT4/External/src/TETParameterisation.cc
 // \author Haegin Han
 //
 
-#ifndef TETRunAction_h
-#define TETRunAction_h 1
-
-#include <ostream>
-#include <fstream>
-#include <map>
-
+#include "TETParameterisation.hh"
+#include "G4LogicalVolume.hh"
+#include "G4VisExecutive.hh"
 #include "G4RunManager.hh"
-#include "G4UnitsTable.hh"
-#include "G4UserRunAction.hh"
-#include "G4SystemOfUnits.hh"
 
-#include "TETRun.hh"
-#include "TETPrimaryGeneratorAction.hh"
-#include "TETModelImport.hh"
-
-// *********************************************************************
-// The main function of this UserRunAction class is to produce the result
-// data and print them.
-// -- GenerateRun: Generate TETRun class which will calculate the sum of
-//                  energy deposition.
-// -- BeginOfRunAction: Set the RunManager to print the progress at the
-//                      interval of 10%.
-// -- EndOfRunAction: Print the run result by G4cout and std::ofstream.
-//  └-- PrintResult: Method to print the result.
-// *********************************************************************
-
-class TETRunAction : public G4UserRunAction
+TETParameterisation::TETParameterisation(TETModelImport* _tetData)
+: G4VPVParameterisation(), tetData(_tetData)
 {
-public:
-	TETRunAction(TETModelImport* tetData, G4String output);
-	virtual ~TETRunAction();
+	// initialise visAttMap which contains G4VisAttributes* for each organ
+	auto colourMap =  tetData->GetColourMap();
+	for(auto colour : colourMap){
+		visAttMap[colour.first] = new G4VisAttributes(colour.second);
+	}
 
-public:
-	virtual G4Run* GenerateRun();
-	virtual void BeginOfRunAction(const G4Run*);
-	virtual void EndOfRunAction(const G4Run*);
+	if(colourMap.size()) isforVis = true;
+	else                 isforVis = false;
+}
 
-	void PrintResult(std::ostream &out);
-	void PrintResult_flux(std::ostream &out);
-  
-private:
-	// std::chrono::_V2::system_clock::time_point start;
-	TETModelImport* tetData;
-	TETRun*         fRun;
-	G4int           numOfEvent;
-	G4int           runID;
-	G4String        outputFile;
-};
+TETParameterisation::~TETParameterisation()
+{}
 
-#endif
+G4VSolid* TETParameterisation::ComputeSolid(
+    		       const G4int copyNo, G4VPhysicalVolume* )
+{
+	// return G4Tet*
+	return tetData->GetTetrahedron(copyNo);
+}
 
+void TETParameterisation::ComputeTransformation(
+                   const G4int,G4VPhysicalVolume*) const
+{}
 
+G4Material* TETParameterisation::ComputeMaterial(const G4int copyNo,
+                                                 G4VPhysicalVolume* phy,
+                                                 const G4VTouchable* )
+{
+   // set the colour for each organ if visualization is required
+	if(isforVis){
+		G4int idx = tetData->GetMaterialIndex(copyNo);
+		phy->GetLogicalVolume()->SetVisAttributes(visAttMap[idx]);
+	}
 
+	// return the material data for each material index
+	return tetData->GetMaterial(tetData->GetMaterialIndex(copyNo));
+}
 
 

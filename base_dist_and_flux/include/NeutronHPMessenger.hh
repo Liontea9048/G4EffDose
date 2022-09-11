@@ -23,64 +23,40 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// TETRunAction.hh
-// \file   MRCP_GEANT4/External/include/TETRunAction.hh
-// \author Haegin Han
+// NeutronHPMessenger.hh
+// \file   MRCP_GEANT4/External/include/NeutronHPMessenger.hh
 //
 
-#ifndef TETRunAction_h
-#define TETRunAction_h 1
 
-#include <ostream>
-#include <fstream>
-#include <map>
 
-#include "G4RunManager.hh"
-#include "G4UnitsTable.hh"
-#include "G4UserRunAction.hh"
-#include "G4SystemOfUnits.hh"
+#ifndef NeutronHPMessenger_h
+#define NeutronHPMessenger_h 1
 
-#include "TETRun.hh"
-#include "TETPrimaryGeneratorAction.hh"
-#include "TETModelImport.hh"
+#include "globals.hh"
+#include "G4UImessenger.hh"
+#include "HadronElasticPhysicsHP.hh"
+#include "G4UIdirectory.hh"
+#include "G4UIcmdWithABool.hh"
 
-// *********************************************************************
-// The main function of this UserRunAction class is to produce the result
-// data and print them.
-// -- GenerateRun: Generate TETRun class which will calculate the sum of
-//                  energy deposition.
-// -- BeginOfRunAction: Set the RunManager to print the progress at the
-//                      interval of 10%.
-// -- EndOfRunAction: Print the run result by G4cout and std::ofstream.
-//  └-- PrintResult: Method to print the result.
-// *********************************************************************
+class HadronElasticPhysicsHP;
+class G4UIdirectory;
+class G4UIcmdWithABool;
 
-class TETRunAction : public G4UserRunAction
+class NeutronHPMessenger: public G4UImessenger
 {
-public:
-	TETRunAction(TETModelImport* tetData, G4String output);
-	virtual ~TETRunAction();
+  public:
+	NeutronHPMessenger(HadronElasticPhysicsHP*);
+	virtual ~NeutronHPMessenger();
 
-public:
-	virtual G4Run* GenerateRun();
-	virtual void BeginOfRunAction(const G4Run*);
-	virtual void EndOfRunAction(const G4Run*);
-
-	void PrintResult(std::ostream &out);
-	void PrintResult_flux(std::ostream &out);
-  
-private:
-	// std::chrono::_V2::system_clock::time_point start;
-	TETModelImport* tetData;
-	TETRun*         fRun;
-	G4int           numOfEvent;
-	G4int           runID;
-	G4String        outputFile;
+	virtual void SetNewValue(G4UIcommand*, G4String);
+    
+  private:    
+    HadronElasticPhysicsHP*  fNeutronPhysics;
+    
+    G4UIdirectory*     fPhysDir;      
+    G4UIcmdWithABool*  fThermalCmd;
 };
 
+
+
 #endif
-
-
-
-
-

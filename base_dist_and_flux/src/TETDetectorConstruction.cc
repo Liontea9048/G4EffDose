@@ -63,15 +63,9 @@ void TETDetectorConstruction::SetupWorldGeometry()
 {
 
 	// Operating or Supporting
-	// Sonde 
+	// Sonde
 	//  =======================================================================
-	// G4double sonde_position = 100. * cm;
-	//G4double sonde_position = 50.*cm;
-	//    G4double sonde_position = 30.*m;
-	// G4double sonde_position = 0. * cm; // for 0 cm
-	//	G4double sonde_position = -30.*m;
-	//	G4double sonde_position = -50.*m;
-	//	G4double sonde_position = -100.*m;
+	G4double sonde_position = 100. * cm;
 	// =======================================================================
 	G4bool checkOverlaps = true;
 	G4Material *vacuum = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
@@ -134,19 +128,9 @@ void TETDetectorConstruction::SetupWorldGeometry()
 	new G4PVPlacement(0,
 					  G4ThreeVector(0.0, 0.0, placement_of_Soil), lv_Soil, "Soil", worldLogical, false, 0, checkOverlaps); // in the world
 
-	//	G4Box* outerPhantomeBox = new G4Box("OuterPhantomBox", PhantomBoxX,PhantomBoxY,PhantomBoxZ );
-	//	G4LogicalVolume* lv_outerPhantomBox = new G4LogicalVolume(outerPhantomeBox, vacuum, "OuterPhantomBox");
-	//	G4VPhysicalVolume* pv_outerPhantomBox =
-	//			new G4PVPlacement(0,G4ThreeVector(0.0*cm, 2.54*4*cm + 10*cm + 50*cm, 100*cm + 2*height_of_soil- height_of_World ), lv_outerPhantomBox,"OuterPhantomBox", worldLogical,false,0, checkOverlaps );
-	//
-
 	// Define the phantom container (10-cm margins from the bounding box of phantom)
 	// Define the phantom container ( 1 m x 1 m x 2 m)
 	//																	Phantomsize of => 55.7708, 29.1260, 176.0047 cm
-
-	//	G4Box* containerSolid = new G4Box("phantomBox", phantomSize.x()/2 + 10.*cm, // 55.7708 /2 + 10cm = 37.8854
-	//			phantomSize.y()/2 + 10.*cm, // 29.1260 / 2 + 10 cm = 24.563
-	//			phantomSize.z()/2 + 10.*cm); // 176.0047 /2 + 10 cm = 98.00235
 
 	G4Box *containerSolid = new G4Box("phantomBox", phantomSize.x() / 2 + 10. * cm, // 55.7708 /2 + 10cm = 37.8854
 									  phantomSize.y() / 2 + 10. * cm,				// 29.1260 / 2 + 10 cm = 24.563
@@ -154,12 +138,11 @@ void TETDetectorConstruction::SetupWorldGeometry()
 
 	container_logic = new G4LogicalVolume(containerSolid, AIR, "phantomLogical");
 	G4double PhantomBoxX = 0.0 * cm;
-	G4double PhantomBoxY = 42.4 * cm + (2.54 * 4) * cm + 10.0 * cm; // at the edge of borehole + 1 m far from the hole
-	G4double PhantomBoxZ = 90.3 * cm + (height_of_soil + centerofSoil); // 2.5 m + 90.3 cm
+	G4double PhantomBoxY = 24.563 * cm + (2.54 * 4) * cm + 10.0 * cm; // at the edge of borehole + 10 cm
+	G4double PhantomBoxZ = 98.00236 * cm + (height_of_soil + centerofSoil);
 
 	//	G4VPhysicalVolume* container_physical =
-	new G4PVPlacement(0,
-					  G4ThreeVector(PhantomBoxX, PhantomBoxY, PhantomBoxZ), container_logic, "PhantomPhysical", worldLogical, false, 0, checkOverlaps);
+	new G4PVPlacement(0, G4ThreeVector(PhantomBoxX, PhantomBoxY, PhantomBoxZ), container_logic, "PhantomPhysical", worldLogical, false, 0, checkOverlaps);
 
 	container_logic->SetOptimisation(TRUE);
 	container_logic->SetSmartless(0.5); // for optimization (default=2)
@@ -203,31 +186,29 @@ void TETDetectorConstruction::SetupWorldGeometry()
 	G4double neutron_shielding_thickness = 20 * cm;
 	G4double housingLength = 220.1 * cm;
 	G4double sondeLength = housingLength - stainlessThcik;
+
+	//	G4double placement_of_Sonde = -115.1*cm + 500.*cm +(sonde_position)-(source_shielding_thickness*0.5)-(stainlessThcik);
+	//	G4double placement_of_Sonde = 115*cm + 500*cm +(sonde_position)-(source_shielding_thickness*0.5);
 	G4double sonde_center = 0.0 * cm;
 	G4double placement_of_sonde;
 
+	//  if (sonde_position == -50.*cm || sonde_position == 0.0*m || sonde_position == +100.0*cm || sonde_position == +50.0*cm){
 	G4cout << "Sonde position is : " << sonde_position / cm << G4endl;
+	// 0cm and -50cm
 
+	// upper_Housing_length = 230.2 * cm - (source_shielding_thickness) - (stainlessThcik) + sonde_position;
+	// lower_Housing_length = 230.2 * cm - upper_Housing_length;
 	upper_Housing_length = housingLength + sonde_position + 0.5 * source_shielding_thickness;
 	lower_Housing_length = housingLength - upper_Housing_length;
 
 	upper_Sonde_length = upper_Housing_length - stainlessThcik;
 	lower_Sonde_length = sondeLength - upper_Sonde_length;
-	
-	placement_of_sonde = -250. * cm + (housingLength * 0.5) + source_shielding_thickness * 0.5 + sonde_position;
-	placement_of_upper_Housing = -250. * cm + (upper_Housing_length * 0.5);
-	placement_of_lower_Housing = 500. * cm - (lower_Housing_length * 0.5);
-
-	G4cout << "Sonde position is : " << sonde_position / cm << G4endl;
 	G4cout << "upper housing length is : " << upper_Housing_length / cm << " cm" << G4endl;
 	G4cout << "lower housing length is : " << lower_Housing_length / cm << " cm" << G4endl;
 	G4cout << "upper sonde length is : " << upper_Sonde_length / cm << " cm" << G4endl;
 	G4cout << "lower sonde length is : " << lower_Sonde_length / cm << " cm" << G4endl;
-	G4cout << "Placement of sonde is : " << (placement_of_sonde / cm) + 250. * cm << " cm" << G4endl;
-	G4cout << "Placement of upperhousing is : " << (placement_of_upper_Housing / cm) + 250. * cm << " cm" << G4endl;
-	G4cout << "Placement of lowerhousing is : " << (placement_of_lower_Housing / cm) - 500. * cm << " cm" << G4endl;
-	G4cout << "Position of bottom surface of upper Housing is : " << (placement_of_upper_Housing / cm) + 250. * cm - upper_Housing_length/cm * 0.5 << " cm" << G4endl;
-	G4cout << "Position of top surface of lower Housing is : " << (placement_of_lower_Housing / cm) - 500. * cm + lower_Housing_length/cm * 0.5 << " cm" << G4endl;
+	// placement_of_sonde_10cm = -250*cm + 1.15*m  -5.0*cm + sonde_position;
+	// G4String Sonde_Center = 10.16-3.81 cm;
 
 	// above the ground
 	if (sonde_position > 0.0 * cm)
@@ -354,209 +335,51 @@ void TETDetectorConstruction::SetupWorldGeometry()
 	else if (sonde_position == 0. * cm)
 	{
 		G4cout << " 0 cm " << G4endl;
-		// Housing
-		// G4VSolid *Housing = new G4Tubs("Sonde", 0.0 * cm, 3.91 * cm, 1.15 * m + 1. * mm, 0 * deg, 360 * deg);
-		G4VSolid *Housing = new G4Tubs("Sonde", 0.0 * cm, 3.91 * cm, 0.5 * housingLength, 0 * deg, 360 * deg);
-		G4LogicalVolume *lv_Housing = new G4LogicalVolume(Housing, SUS_409, "Housing");
-		//		G4VPhysicalVolume* pv_Sonde =
-		new G4PVPlacement(0, G4ThreeVector(0.0 * cm, 0.0 * cm, placement_of_sonde), lv_Housing, "Housing", lv_imaginary_BoreHole, false, 0, checkOverlaps);
-		// done
-
-		// Sonde
-		G4VSolid *Sonde = new G4Tubs("Sonde", 0. * cm, 3.81 * cm, 0.5 * sondeLength, 0 * deg, 360 * deg);
-		//		G4VSolid* Housing = new G4Tubs("Housing", 3.81*cm, 3.91*cm, 1.15*m + 11*mm, 0*deg, 360*deg);
-		G4LogicalVolume *lv_Sonde = new G4LogicalVolume(Sonde, AIR, "Sonde");
-		//		G4VPhysicalVolume* pv_Housing =
-		new G4PVPlacement(0, G4ThreeVector(0., 0., -0.5 * stainlessThcik), lv_Sonde, "Sonde", lv_Housing, false, 0, checkOverlaps);
-
-		// Source_shielding
-		G4Material *Tungsten = G4NistManager::Instance()->FindOrBuildMaterial("G4_W");
-
-		// Source_shielding // 2022.04.06 modified by HSB
-		G4VSolid *upper_Source_Shielding = new G4Tubs("upper_Source_Shielding", 0.0 * cm, 1.5 * cm, source_shielding_thickness * 0.5 * 0.5, 0 * deg, 360 * deg);
-		G4LogicalVolume *lv_upper_Source_Shielding = new G4LogicalVolume(upper_Source_Shielding, SUS_409, "upper_Source_Shielding");
-		new G4PVPlacement(0, G4ThreeVector(0.0 * cm, 0.0 * cm, (-250. * cm + sonde_position + source_shielding_thickness * 0.5 * 0.5)),
-						  lv_upper_Source_Shielding, "upper_Source_Shielding", lv_imaginary_BoreHole, false, 0, checkOverlaps);
-
-		G4VSolid *lower_Source_Shielding = new G4Tubs("lower_Source_Shielding", 0.0 * cm, 1.5 * cm, source_shielding_thickness * 0.5 * 0.5, 0 * deg, 360 * deg);
-		G4LogicalVolume *lv_lower_Source_Shielding = new G4LogicalVolume(lower_Source_Shielding, SUS_409, "lower_Source_Shielding");
-		new G4PVPlacement(0, G4ThreeVector(0.0 * cm, 0.0 * cm, (500. * cm + sonde_position - source_shielding_thickness * 0.5 * 0.5)),
-						  lv_lower_Source_Shielding, "lower_Source_Shielding", lv_BoreHole, false, 0, checkOverlaps);
-
-		// Am-Be source
-		G4VSolid *upper_Source = new G4Tubs("upper_Source", 0.0 * cm, 1.25 * cm, 2.5 * cm * 0.5, 0 * deg, 360 * deg);
-		G4LogicalVolume *lv_upper_Source = new G4LogicalVolume(upper_Source, AmBe, "upper_Source");
-		new G4PVPlacement(0, G4ThreeVector(0., 0., -0.25*cm), lv_upper_Source, "upper_Source", lv_upper_Source_Shielding, false, 0, checkOverlaps);
-
-		G4VSolid *lower_Source = new G4Tubs("lower_Source", 0.0 * cm, 1.25 * cm, 2.5 * cm * 0.5, 0 * deg, 360 * deg);
-		G4LogicalVolume *lv_lower_Source = new G4LogicalVolume(lower_Source, AmBe, "lower_Source");
-		new G4PVPlacement(0, G4ThreeVector(0., 0., +0.25*cm), lv_lower_Source, "lower_Source", lv_lower_Source_Shielding, false, 0, checkOverlaps);
-
-		// Neutron_shielding
-		G4VSolid *Neutron_Shielding = new G4Tubs("Neutron_Shielding", 0.0 * cm, 3.81 * cm, neutron_shielding_thickness * 0.5, 0 * deg, 360 * deg);
-		G4LogicalVolume *lv_Neutron_Shielding = new G4LogicalVolume(Neutron_Shielding, Tungsten, "Neutron_Shielding");
-		//		G4VPhysicalVolume* pv_Neutron_shielding =
-		//		new G4PVPlacement(0, G4ThreeVector(0.0*cm, 0.0*cm, (-1.15*m+neutron_shielding_thickness*0.5+source_shielding_thickness)), lv_Neutron_Shielding, "Neutron_Shielding",lv_Sonde,false,0, checkOverlaps);
-		new G4PVPlacement(0, G4ThreeVector(0.0 * cm, 0.0 * cm, (-0.5 * sondeLength + neutron_shielding_thickness * 0.5)), lv_Neutron_Shielding, "Neutron_Shielding", lv_Sonde, false, 0, checkOverlaps);
-
-		// Near_Detector (Stilbene)
-		G4double near_detector_distance = 30 * cm;
-		G4Material *Stilbene = G4NistManager::Instance()->FindOrBuildMaterial("G4_STILBENE");
-		G4VSolid *Near_Detector = new G4Tubs("Near_Detector", 0.0 * cm, 3.81 * cm, 3.81 * cm, 0 * deg, 360 * deg);
-		G4LogicalVolume *lv_Near_Detector = new G4LogicalVolume(Near_Detector, Stilbene, "Near_Detector");
-		//		G4VPhysicalVolume* pv_Near_Detector =
-		//		new G4PVPlacement(0, G4ThreeVector(0.0*cm, 0.0*cm, (-1.15*m + source_shielding_thickness*0.5 + near_detector_distance + 3.71*cm)), lv_Near_Detector, "Near_Detector",lv_Sonde,false,0, checkOverlaps);
-		new G4PVPlacement(0, G4ThreeVector(0.0 * cm, 0.0 * cm, (-0.5 * sondeLength - source_shielding_thickness * 0.5 + near_detector_distance + 3.81 * cm)), lv_Near_Detector, "Near_Detector", lv_Sonde, false, 0, checkOverlaps);
-
-		// Far_Detector (Stilbene)
-		G4double far_detector_distance = 80 * cm;
-		G4VSolid *Far_Detector = new G4Tubs("Far_Detector", 0.0 * cm, 3.81 * cm, 3.81 * cm, 0 * deg, 360 * deg);
-		G4LogicalVolume *lv_Far_Detector = new G4LogicalVolume(Far_Detector, Stilbene, "Far_Detector");
-		//		G4VPhysicalVolume* pv_Far_Detector =
-		//		new G4PVPlacement(0, G4ThreeVector(0.0*cm, 0.0*cm, (-1.15*m + source_shielding_thickness*0.5 + far_detector_distance + 3.71*cm)), lv_Far_Detector, "Far_Detector",lv_Sonde,false,0, checkOverlaps);
-		new G4PVPlacement(0, G4ThreeVector(0.0 * cm, 0.0 * cm, (-0.5 * sondeLength - source_shielding_thickness * 0.5 + far_detector_distance + 3.81 * cm)), lv_Far_Detector, "Far_Detector", lv_Sonde, false, 0, checkOverlaps);
-
-		// // visualization
-		// // Sonde
-		// // upper
-		// G4VisAttributes *va_upper_Sonde = new G4VisAttributes(G4Colour(2.0, 3.0, 0.0, 0.5));
-		// va_upper_Sonde->SetForceWireframe(true);
-		// lv_upper_Sonde->SetVisAttributes(va_upper_Sonde);
-		// // lower
-		// G4VisAttributes *va_lower_Sonde = new G4VisAttributes(G4Colour(2.0, 3.0, 0.0, 0.5));
-		// va_lower_Sonde->SetForceWireframe(true);
-		// lv_lower_Sonde->SetVisAttributes(va_lower_Sonde);
-
-		// // Housing
-		// //  upper
-		// G4VisAttributes *va_upper_Housing = new G4VisAttributes(G4Colour(0.0, 1.0, 0.0, 0.2));
-		// va_upper_Housing->SetForceWireframe(true);
-		// lv_upper_Housing->SetVisAttributes(va_upper_Housing);
-
-		// // lower
-		// G4VisAttributes *va_lower_Housing = new G4VisAttributes(G4Colour(0.0, 1.0, 0.0, 0.2));
-		// va_lower_Housing->SetForceWireframe(true);
-		// lv_lower_Housing->SetVisAttributes(va_lower_Housing);
-
-		// // Souce_Shielding
-		// // lower
-		// G4VisAttributes *va_lower_Source_Shielding = new G4VisAttributes(G4Colour(0.0, 1.0, 1.0));
-		// va_lower_Source_Shielding->SetForceWireframe(true);
-		// lv_lower_Source_Shielding->SetVisAttributes(va_lower_Source_Shielding);
-
-		// G4VisAttributes *va_upper_Source_Shielding = new G4VisAttributes(G4Colour(1.0, 0.0, 1.0));
-		// va_upper_Source_Shielding->SetForceWireframe(true);
-		// lv_upper_Source_Shielding->SetVisAttributes(va_upper_Source_Shielding);
-
-		// // Neutron_shielding
-		// G4VisAttributes *va_Neutron_Shielding = new G4VisAttributes(G4Colour(1.0, 1.0, 0.0));
-		// va_Neutron_Shielding->SetForceWireframe(true);
-		// lv_Neutron_Shielding->SetVisAttributes(va_Neutron_Shielding);
-
-		// // Near_Detector
-		// G4VisAttributes *va_Near_Detector = new G4VisAttributes(G4Colour(0.0, 1.0, 1.0));
-		// va_Near_Detector->SetForceWireframe(true);
-		// lv_Near_Detector->SetVisAttributes(va_Near_Detector);
-
-		// // Far_Detector
-		// G4VisAttributes *va_Far_Detector = new G4VisAttributes(G4Colour(0.0, 1.0, 1.0));
-		// va_Far_Detector->SetForceWireframe(true);
-		// lv_Far_Detector->SetVisAttributes(va_Far_Detector);
-
-		// // Visualization
-		// // world
-		// G4VisAttributes *va_World = new G4VisAttributes(G4Colour(1.0, 1.0, 1.0));
-		// va_World->SetForceWireframe(true);
-		// worldLogical->SetVisAttributes(va_World);
-
-		// // soil
-		// G4VisAttributes *va_Soil = new G4VisAttributes(G4Colour(0.6, 0.3, 0.4, 0.1));
-		// va_Soil->SetForceWireframe(true);
-		// lv_Soil->SetVisAttributes(va_Soil);
-
-		// // PhantomBox
-		// G4VisAttributes *va_PhantomBox = new G4VisAttributes(G4Colour(0.0, 1.0, 0.0, 0.5));
-		// va_PhantomBox->SetForceWireframe(true);
-		// container_logic->SetVisAttributes(va_PhantomBox);
-
-		// // BoreHole
-		// G4VisAttributes *va_BoreHole = new G4VisAttributes(G4Colour(0.0, 0.0, 1.0, 0.1));
-		// va_BoreHole->SetForceWireframe(true);
-		// lv_BoreHole->SetVisAttributes(va_BoreHole);
-
-		// // imaginary_Borehole
-		// G4VisAttributes *va_imaginary_BoreHole = new G4VisAttributes(G4Colour(1.0, 0.0, 0.0, 0.1));
-		// va_imaginary_BoreHole->SetForceWireframe(true);
-		// lv_imaginary_BoreHole->SetVisAttributes(va_imaginary_BoreHole);
-	}
-
-	else if (-10.0 * cm <= sonde_position && sonde_position <= -20. * cm ){
-		// - 10 cm
-		G4cout << " underground - 10.0 cm" << G4endl;
-
-		// upper housing
 		G4VSolid *upper_Housing = new G4Tubs("upper_Housing", 0.0 * cm, 3.91 * cm, upper_Housing_length * 0.5, 0 * deg, 360 * deg);
 		G4LogicalVolume *lv_upper_Housing = new G4LogicalVolume(upper_Housing, SUS_409, "upper_Housing");
 		//		G4VPhysicalVolume* pv_upper_Sonde =
 		new G4PVPlacement(0, G4ThreeVector(0.0 * cm, sonde_center, placement_of_upper_Housing), lv_upper_Housing, "upper_Housing", lv_imaginary_BoreHole, false, 0, checkOverlaps);
 
 		// upper_Sonde
-		G4VSolid *upper_Sonde = new G4Tubs("upper_Sonde", 0. * cm, 3.81 * cm, upper_Sonde_length * 0.5, 0 * deg, 360 * deg);
+		G4VSolid *upper_Sonde = new G4Tubs("upper_Sonde", 0. * cm, 3.81 * cm, upper_Housing_length * 0.5 - stainlessThcik * 0.5, 0 * deg, 360 * deg);
 		G4LogicalVolume *lv_upper_Sonde = new G4LogicalVolume(upper_Sonde, AIR, "upper_Sonde");
 		//		G4VPhysicalVolume* pv_upper_Housing =
-		new G4PVPlacement(0, G4ThreeVector(0., 0., -0.5 * stainlessThcik), lv_upper_Sonde, "upper_Sonde", lv_upper_Housing, false, 0, checkOverlaps);
+		new G4PVPlacement(0, G4ThreeVector(0., 0., -0.05 * mm), lv_upper_Sonde, "upper_Sonde", lv_upper_Housing, false, 0, checkOverlaps);
 
-		// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-		// lower housing
 		G4VSolid *lower_Housing = new G4Tubs("lower_Housing", 0.0 * cm, 3.91 * cm, lower_Housing_length * 0.5, 0 * deg, 360 * deg);
 		G4LogicalVolume *lv_lower_Housing = new G4LogicalVolume(lower_Housing, SUS_409, "lower_Housing");
 		//		G4VPhysicalVolume* pv_lower_Sonde =
 		new G4PVPlacement(0, G4ThreeVector(0.0 * cm, sonde_center, placement_of_lower_Housing), lv_lower_Housing, "lower_Housing", lv_BoreHole, false, 0, checkOverlaps);
 
 		// lower_Sonde
-		G4VSolid *lower_Sonde = new G4Tubs("lower_Sonde", 0. * cm, 3.81 * cm, lower_Sonde_length * 0.5, 0 * deg, 360 * deg);
+		G4VSolid *lower_Sonde = new G4Tubs("lower_Sonde", 0. * cm, 3.81 * cm, lower_Housing_length * 0.5 - stainlessThcik * 0.5, 0 * deg, 360 * deg);
 		G4LogicalVolume *lv_lower_Sonde = new G4LogicalVolume(lower_Sonde, AIR, "lower_Sonde");
 		//		G4VPhysicalVolume* pv_lower_Housing =
-		new G4PVPlacement(0, G4ThreeVector(), lv_lower_Sonde, "lower_Sonde", lv_lower_Housing, false, 0, checkOverlaps);
-
-		// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+		new G4PVPlacement(0, G4ThreeVector(0., 0., +0.05 * mm), lv_lower_Sonde, "lower_Sonde", lv_lower_Housing, false, 0, checkOverlaps);
 
 		// Source_shielding
 		G4Material *Tungsten = G4NistManager::Instance()->FindOrBuildMaterial("G4_W");
-		G4VSolid *Source_Shielding = new G4Tubs("Source_Shielding", 0.0 * cm, 1.5 * cm, source_shielding_thickness * 0.5, 0 * deg, 360 * deg);
-		G4LogicalVolume *lv_Source_Shielding = new G4LogicalVolume(Source_Shielding, SUS_409, "Source_Shielding");
+
+		// upper source shielding
+		G4VSolid *upper_Source_Shielding = new G4Tubs("upper_Source_Shielding", 0.0 * cm, 3.81 * cm, source_shielding_thickness * 0.5 * 0.5, 0 * deg, 360 * deg);
+		G4LogicalVolume *lv_upper_Source_Shielding = new G4LogicalVolume(upper_Source_Shielding, Tungsten, "upper_Source_Shielding");
 		//		G4VPhysicalVolume* pv_lower_Source_Shielding =
-		new G4PVPlacement(0, G4ThreeVector(0.0 * cm, 0.0 * cm, (500. * cm + sonde_position)), lv_Source_Shielding,
-						  "Source_Shielding", lv_BoreHole, false, 0, checkOverlaps);
+		new G4PVPlacement(0, G4ThreeVector(0.0 * cm, 0.0 * cm, (-upper_Housing_length * 0.5 + stainlessThcik * 0.5 + source_shielding_thickness * 0.5 * 0.5)), lv_upper_Source_Shielding,
+						  "upper_Source_Shielding", lv_upper_Sonde, false, 0, checkOverlaps);
 
-		// Am-Be source
-		G4VSolid *Source = new G4Tubs("Source", 0.0 * cm, 1.25 * cm, 2.5 * cm, 0 * deg, 360 * deg);
-		G4LogicalVolume *lv_Source = new G4LogicalVolume(Source, AmBe, "Source");
-		//		G4VPhysicalVolume* pv_Source =
-		new G4PVPlacement(0, G4ThreeVector(), lv_Source, "Source", lv_Source_Shielding, false, 0, checkOverlaps);
+		// lower source shielding
+		G4VSolid *lower_Source_Shielding = new G4Tubs("lower_Source_Shielding", 0.0 * cm, 3.81 * cm, source_shielding_thickness * 0.5 * 0.5, 0 * deg, 360 * deg);
+		G4LogicalVolume *lv_lower_Source_Shielding = new G4LogicalVolume(lower_Source_Shielding, Tungsten, "lower_Source_Shielding");
+		//		G4VPhysicalVolume* pv_lower_Source_Shielding =
+		new G4PVPlacement(0, G4ThreeVector(0.0 * cm, 0.0 * cm, (+lower_Housing_length * 0.5 - stainlessThcik * 0.5 - source_shielding_thickness * 0.5 * 0.5)), lv_lower_Source_Shielding,
+						  "lower_Source_Shielding", lv_lower_Sonde, false, 0, checkOverlaps);
 
-		// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-		G4double UpperNeutronShieldLenght = (neutron_shielding_thickness - lower_Sonde_length);
-		G4double LowerNeutronShieldLenght = (neutron_shielding_thickness - UpperNeutronShieldLenght);
-		G4double halfUpperNeutronShieldLenght = UpperNeutronShieldLenght * 0.5;
-		G4double halfLowerNeutronShieldLenght = LowerNeutronShieldLenght * 0.5;
-		// upper Neutron_shielding
-		G4VSolid *upperNeutron_Shielding = new G4Tubs("upperNeutron_Shielding", 0.0 * cm, 3.81 * cm, halfUpperNeutronShieldLenght, 0 * deg, 360 * deg);
-		G4LogicalVolume *lv_upperNeutron_Shielding = new G4LogicalVolume(upperNeutron_Shielding, Tungsten, "upperNeutron_Shielding");
+		// Neutron_shielding
+		G4VSolid *Neutron_Shielding = new G4Tubs("Neutron_Shielding", 0.0 * cm, 3.81 * cm, neutron_shielding_thickness * 0.5, 0 * deg, 360 * deg);
+		G4LogicalVolume *lv_Neutron_Shielding = new G4LogicalVolume(Neutron_Shielding, Tungsten, "Neutron_Shielding");
 		//		G4VPhysicalVolume* pv_Neutron_shielding =
-		new G4PVPlacement(0, G4ThreeVector(0.0 * cm, 0.0 * cm, (-upper_Sonde_length * 0.5 + halfUpperNeutronShieldLenght)),
-						  lv_upperNeutron_Shielding, "upperNeutron_Shielding", lv_upper_Sonde, false, 0, checkOverlaps);
-
-		// lower Neutron_shielding
-		G4VSolid *lowerNeutron_Shielding = new G4Tubs("lowerNeutron_Shielding", 0.0 * cm, 3.81 * cm, halfLowerNeutronShieldLenght, 0 * deg, 360 * deg);
-		G4LogicalVolume *lv_lowerNeutron_Shielding = new G4LogicalVolume(lowerNeutron_Shielding, Tungsten, "lowerNeutron_Shielding");
-		//		G4VPhysicalVolume* pv_Neutron_shielding =
-		new G4PVPlacement(0, G4ThreeVector(0.0 * cm, 0.0 * cm, (+lower_Sonde_length * 0.5 - halfLowerNeutronShieldLenght)),
-						  lv_lowerNeutron_Shielding, "lowerNeutron_Shielding", lv_lower_Sonde, false, 0, checkOverlaps);
-
-		// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+		new G4PVPlacement(0, G4ThreeVector(0.0 * cm, 0.0 * cm, (-upper_Housing_length * 0.5 + stainlessThcik * 0.5 + neutron_shielding_thickness * 0.5 + source_shielding_thickness * 0.5)),
+						  lv_Neutron_Shielding, "Neutron_Shielding", lv_upper_Sonde, false, 0, checkOverlaps);
 
 		// Near_Detector (Stilbene)
 		G4double near_detector_distance = 30 * cm;
@@ -564,7 +387,7 @@ void TETDetectorConstruction::SetupWorldGeometry()
 		G4VSolid *Near_Detector = new G4Tubs("Near_Detector", 0.0 * cm, 3.81 * cm, 3.81 * cm, 0 * deg, 360 * deg);
 		G4LogicalVolume *lv_Near_Detector = new G4LogicalVolume(Near_Detector, Stilbene, "Near_Detector");
 		//		G4VPhysicalVolume* pv_Near_Detector =
-		new G4PVPlacement(0, G4ThreeVector(0.0 * cm, 0.0 * cm, (-upper_Sonde_length * 0.5 + near_detector_distance + sonde_position + 3.81 * cm)),
+		new G4PVPlacement(0, G4ThreeVector(0.0 * cm, 0.0 * cm, (-upper_Housing_length * 0.5 + stainlessThcik * 0.5 + near_detector_distance + 3.81 * cm + source_shielding_thickness * 0.5)),
 						  lv_Near_Detector, "Near_Detector", lv_upper_Sonde, false, 0, checkOverlaps);
 
 		// Far_Detector (Stilbene)
@@ -572,8 +395,81 @@ void TETDetectorConstruction::SetupWorldGeometry()
 		G4VSolid *Far_Detector = new G4Tubs("Far_Detector", 0.0 * cm, 3.81 * cm, 3.81 * cm, 0 * deg, 360 * deg);
 		G4LogicalVolume *lv_Far_Detector = new G4LogicalVolume(Far_Detector, Stilbene, "Far_Detector");
 		//		G4VPhysicalVolume* pv_Far_Detector =
-		new G4PVPlacement(0, G4ThreeVector(0.0 * cm, 0.0 * cm, (-upper_Sonde_length * 0.5 + far_detector_distance + sonde_position + 3.81 * cm)),
+		new G4PVPlacement(0, G4ThreeVector(0.0 * cm, 0.0 * cm, (-lower_Housing_length * 0.5 + stainlessThcik * 0.5 + far_detector_distance + 3.81 * cm + source_shielding_thickness * 0.5)),
 						  lv_Far_Detector, "Far_Detector", lv_upper_Sonde, false, 0, checkOverlaps);
+
+		// visualization
+		// Sonde
+		// upper
+		G4VisAttributes *va_upper_Sonde = new G4VisAttributes(G4Colour(2.0, 3.0, 0.0, 0.5));
+		va_upper_Sonde->SetForceWireframe(true);
+		lv_upper_Sonde->SetVisAttributes(va_upper_Sonde);
+		// lower
+		G4VisAttributes *va_lower_Sonde = new G4VisAttributes(G4Colour(2.0, 3.0, 0.0, 0.5));
+		va_lower_Sonde->SetForceWireframe(true);
+		lv_lower_Sonde->SetVisAttributes(va_lower_Sonde);
+
+		// Housing
+		//  upper
+		G4VisAttributes *va_upper_Housing = new G4VisAttributes(G4Colour(0.0, 1.0, 0.0, 0.2));
+		va_upper_Housing->SetForceWireframe(true);
+		lv_upper_Housing->SetVisAttributes(va_upper_Housing);
+
+		// lower
+		G4VisAttributes *va_lower_Housing = new G4VisAttributes(G4Colour(0.0, 1.0, 0.0, 0.2));
+		va_lower_Housing->SetForceWireframe(true);
+		lv_lower_Housing->SetVisAttributes(va_lower_Housing);
+
+		// Souce_Shielding
+		// lower
+		G4VisAttributes *va_lower_Source_Shielding = new G4VisAttributes(G4Colour(0.0, 1.0, 1.0));
+		va_lower_Source_Shielding->SetForceWireframe(true);
+		lv_lower_Source_Shielding->SetVisAttributes(va_lower_Source_Shielding);
+
+		G4VisAttributes *va_upper_Source_Shielding = new G4VisAttributes(G4Colour(1.0, 0.0, 1.0));
+		va_upper_Source_Shielding->SetForceWireframe(true);
+		lv_upper_Source_Shielding->SetVisAttributes(va_upper_Source_Shielding);
+
+		// Neutron_shielding
+		G4VisAttributes *va_Neutron_Shielding = new G4VisAttributes(G4Colour(1.0, 1.0, 0.0));
+		va_Neutron_Shielding->SetForceWireframe(true);
+		lv_Neutron_Shielding->SetVisAttributes(va_Neutron_Shielding);
+
+		// Near_Detector
+		G4VisAttributes *va_Near_Detector = new G4VisAttributes(G4Colour(0.0, 1.0, 1.0));
+		va_Near_Detector->SetForceWireframe(true);
+		lv_Near_Detector->SetVisAttributes(va_Near_Detector);
+
+		// Far_Detector
+		G4VisAttributes *va_Far_Detector = new G4VisAttributes(G4Colour(0.0, 1.0, 1.0));
+		va_Far_Detector->SetForceWireframe(true);
+		lv_Far_Detector->SetVisAttributes(va_Far_Detector);
+
+		// Visualization
+		// world
+		G4VisAttributes *va_World = new G4VisAttributes(G4Colour(1.0, 1.0, 1.0));
+		va_World->SetForceWireframe(true);
+		worldLogical->SetVisAttributes(va_World);
+
+		// soil
+		G4VisAttributes *va_Soil = new G4VisAttributes(G4Colour(0.6, 0.3, 0.4, 0.1));
+		va_Soil->SetForceWireframe(true);
+		lv_Soil->SetVisAttributes(va_Soil);
+
+		// PhantomBox
+		G4VisAttributes *va_PhantomBox = new G4VisAttributes(G4Colour(0.0, 1.0, 0.0, 0.5));
+		va_PhantomBox->SetForceWireframe(true);
+		container_logic->SetVisAttributes(va_PhantomBox);
+
+		// BoreHole
+		G4VisAttributes *va_BoreHole = new G4VisAttributes(G4Colour(0.0, 0.0, 1.0, 0.1));
+		va_BoreHole->SetForceWireframe(true);
+		lv_BoreHole->SetVisAttributes(va_BoreHole);
+
+		// imaginary_Borehole
+		G4VisAttributes *va_imaginary_BoreHole = new G4VisAttributes(G4Colour(1.0, 0.0, 0.0, 0.1));
+		va_imaginary_BoreHole->SetForceWireframe(true);
+		lv_imaginary_BoreHole->SetVisAttributes(va_imaginary_BoreHole);
 	}
 
 	//	underground / 2022.04.06 by HSB
@@ -1038,6 +934,7 @@ void TETDetectorConstruction::ConstructSDandField()
 	G4MultiFunctionalDetector *MFDet = new G4MultiFunctionalDetector(phantomSDname);
 	pSDman->AddNewDetector(MFDet);
 
+	// E Dep. For neutrons with kinetic energy ranges from 0 to 1 MeV
 	G4VSensitiveDetector *eDep_n1 = new TETSensitiveDetector("n1", "eDep_manual_n1", tetData);
 	n_1 = new G4SDParticleWithEnergyFilter("n1");
 	n_1->add("neutron");
@@ -1046,6 +943,7 @@ void TETDetectorConstruction::ConstructSDandField()
 	pSDman->AddNewDetector(eDep_n1);
 	SetSensitiveDetector(tetLogic, eDep_n1);
 
+	// E Dep. For neutrons with kinetic energy ranges from 0 to 1 MeV
 	G4VSensitiveDetector *eDep_n50 = new TETSensitiveDetector("n50", "eDep_manual_n50", tetData);
 	n_50 = new G4SDParticleWithEnergyFilter("n50");
 	n_50->add("neutron");
@@ -1054,6 +952,7 @@ void TETDetectorConstruction::ConstructSDandField()
 	pSDman->AddNewDetector(eDep_n50);
 	SetSensitiveDetector(tetLogic, eDep_n50);
 
+	// E dep. for gamma, electron, and muons using PSEnergyDeposit ( no need to separate depending on the energy)
 	primitive = new TETPSEnergyDeposit("eDep_gem", tetData);
 	gem = new G4SDParticleWithEnergyFilter("gem");
 	gem->add("gamma");
@@ -1063,6 +962,7 @@ void TETDetectorConstruction::ConstructSDandField()
 	primitive->SetFilter(gem);
 	MFDet->RegisterPrimitive(primitive);
 
+	// E dep. for proton and pions using PSEnergyDeposit ( no need to separate depending on the energy)
 	primitive = new TETPSEnergyDeposit("eDep_hp", tetData);
 	hp = new G4SDParticleWithEnergyFilter("hp");
 	hp->add("proton");
@@ -1071,11 +971,57 @@ void TETDetectorConstruction::ConstructSDandField()
 	primitive->SetFilter(hp);
 	MFDet->RegisterPrimitive(primitive);
 
+	// E dep. for alpha and other particles using PSEnergyDeposit ( no need to separate depending on the energy)
 	primitive = new TETPSEnergyDeposit("eDep_alpha", tetData);
 	alpha = new G4SDParticleWithEnergyFilter("alpha");
 	alpha->add("alpha");
 	alpha->add("GenericIon");
 	primitive->SetFilter(alpha);
+	MFDet->RegisterPrimitive(primitive);
+
+
+	// ---------------------------------------- Cell Flux ------------------------------
+	// Cell flux for neutrons with kinetic energy ranges from 0 to 1 MeV
+	primitive = new TETPSTrackLength("cFlux_n1", tetData);
+	auto n1_flux = new G4SDParticleWithEnergyFilter("n1_flux");
+	n1_flux->add("neutron");
+	n1_flux->SetKineticEnergy(0. * MeV, 1.0 * MeV);
+	primitive->SetFilter(n1_flux);
+	MFDet->RegisterPrimitive(primitive);
+
+	// Cell flux for neutrons with kinetic energy ranges from 0 to 1 MeV
+	primitive = new TETPSTrackLength("cFlux_n50", tetData);
+	auto n50_flux = new G4SDParticleWithEnergyFilter("n50_flux");
+	n50_flux->add("neutron");
+	n50_flux->SetKineticEnergy(1.0 * MeV, 50.0 * MeV);
+	primitive->SetFilter(n50_flux);
+	MFDet->RegisterPrimitive(primitive);
+
+	// Cell flux for gamma, electron, and muons using PSEnergyDeposit ( no need to separate depending on the energy)
+	primitive = new TETPSTrackLength("cFLux_gem", tetData);
+	gem_flux = new G4SDParticleWithEnergyFilter("gem_flux");
+	gem_flux->add("gamma");
+	gem_flux->add("e-");
+	gem_flux->add("mu+");
+	gem_flux->add("mu-");
+	primitive->SetFilter(gem_flux);
+	MFDet->RegisterPrimitive(primitive);
+
+	// Cell flux for proton and pions using PSEnergyDeposit ( no need to separate depending on the energy)
+	primitive = new TETPSTrackLength("cFlux_hp", tetData);
+	hp_flux = new G4SDParticleWithEnergyFilter("hp_flux");
+	hp_flux->add("proton");
+	hp_flux->add("pi+");
+	hp_flux->add("pi-");
+	primitive->SetFilter(hp_flux);
+	MFDet->RegisterPrimitive(primitive);
+
+	// Cell flux for alpha and other particles using PSEnergyDeposit ( no need to separate depending on the energy)
+	primitive = new TETPSEnergyDeposit("cFlux_alpha", tetData);
+	alpha_flux = new G4SDParticleWithEnergyFilter("alpha_flux");
+	alpha_flux->add("alpha");
+	alpha_flux->add("GenericIon");
+	primitive->SetFilter(alpha_flux);
 	MFDet->RegisterPrimitive(primitive);
 
 	// attach the detector to logical volume for parameterised geometry (phantom geometry)

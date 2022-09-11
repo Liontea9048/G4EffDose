@@ -1,0 +1,20 @@
+#/run/verbose 0
+#/tracking/verbose 0
+
+/gps/particle neutron
+/gps/pos/type Point
+/gps/ang/type iso
+
+# Source Center position
+/gps/pos/centre 0.0 0.0 350.001 cm # at +100 cm
+#/gps/pos/centre 0.0 0.0 300.001 cm # at +50 cm
+#/gps/pos/centre 0.0 0.0 280.001 cm # at +30 cm
+#/gps/pos/centre 0.0 0.0 220.001 cm # at -30 cm
+#/gps/pos/centre 0.0 0.0 200.001 cm # at -50 cm
+#/gps/pos/centre 0.0 0.0 150.001 cm # at -100 cm
+
+/gps/ene/type User
+
+# Source Energy 
+/gps/hist/type energy
+/control/execute hist_source_point.dat
