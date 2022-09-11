@@ -72,10 +72,8 @@ void TETRunAction::EndOfRunAction(const G4Run* aRun)
 	G4cout<< outputFile.c_str() << G4endl;
 	std::ofstream ofs(outputFile.c_str());
 	PrintResult(ofs);
-	ofs.close();
 
-	
-	outputFile_flux = outputFile - ".out" + "_flux.out";
+	outputFile_flux = outputFile + "_flux.out";
 	G4cout<< outputFile_flux.c_str() << G4endl;
 	std::ofstream ofs_flux(outputFile_flux.c_str());
 	PrintResult_flux(ofs_flux);
