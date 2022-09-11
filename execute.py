@@ -150,11 +150,11 @@ if __name__ == "__main__":
                 except:
                     pass 
 
-            #cmake
-            system("cmake ./")
-            commands = f"make -j 10 && ./External -m ./example.in -o {outputPath}/{posture}_{fixedPos}_{pos}.out &" 
-            system(commands)
-            log(workingDir, commands)
+                #cmake
+                system("cmake ./")
+                commands = f"make -j 10 && ./External -m ./example.in -o {outputPath}/{posture}_{fixedPos}_{pos}.out &" 
+                system(commands)
+                log(workingDir, commands)
         else:
             for pos in posLst:
                 print(f"-------------------------------------------------------------------------------{pos}")
@@ -186,11 +186,11 @@ if __name__ == "__main__":
                 except:
                     pass 
 
-            #cmake
-            system("cmake ./")
-            commands = f"make -j 10 && ./External -m ./example.in -o {outputPath}/{posture}_{pos}.out &" 
-            system(commands)
-            log(workingDir, commands)
+                #cmake
+                system("cmake ./")
+                commands = f"make -j 10 && ./External -m ./example.in -o {outputPath}/{posture}_{pos}.out &" 
+                system(commands)
+                log(workingDir, commands)
 
     if yVarying:
         print(f"position is : {fixedPos}, and posLst are below")
