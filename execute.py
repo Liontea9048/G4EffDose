@@ -119,6 +119,7 @@ if __name__ == "__main__":
 
     def execute(fluxMode, workingDir, posLst, baseOrfluxDir, srcFileDir, numCores, nps, posture, outputPath, fixedPos):
         if fluxMode:
+            srcFileDir= join(srcFileDir, f"flux/flux_{posture}")
             for pos in posLst:
                 print(f"-------------------------------------------------------------------------------{pos}")
                 inputPath = join(workingDir, f"movingY")
@@ -138,7 +139,6 @@ if __name__ == "__main__":
                 system(f"cp -rf {baseOrfluxDir}/* ./")
                 
                 # cp src files suitable for the case
-                srcFileDir = join(srcFileDir, f"flux/flux_{posture}")
                 system(f"cp -rf {srcFileDir}/* ./src")
 
                 modifyExample(numCores, nps)
