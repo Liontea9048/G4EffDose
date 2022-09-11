@@ -998,7 +998,7 @@ void TETDetectorConstruction::ConstructSDandField()
 	MFDet->RegisterPrimitive(primitive);
 
 	// Cell flux for gamma, electron, and muons using PSEnergyDeposit ( no need to separate depending on the energy)
-	primitive = new TETPSTrackLength("cFLux_gem", tetData);
+	primitive = new TETPSTrackLength("cFlux_gem", tetData);
 	auto gem_flux = new G4SDParticleWithEnergyFilter("gem_flux");
 	gem_flux->add("gamma");
 	gem_flux->add("e-");
