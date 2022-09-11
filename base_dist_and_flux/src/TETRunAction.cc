@@ -77,7 +77,7 @@ void TETRunAction::EndOfRunAction(const G4Run* aRun)
 	std::ofstream ofs_flux(outputFile_flux.c_str());
 	PrintResult_flux(ofs_flux);
 	ofs_flux.close();
-3}
+}
 
 void TETRunAction::PrintResult(std::ostream &out)
 {
