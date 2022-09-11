@@ -70,7 +70,7 @@ public:
 	void PrintResult_flux(std::ostream &out);
   
 private:
-	std::chrono::_V2::system_clock::time_point start;
+	// std::chrono::_V2::system_clock::time_point start;
 	TETModelImport* tetData;
 	TETRun*         fRun;
 	G4int           numOfEvent;

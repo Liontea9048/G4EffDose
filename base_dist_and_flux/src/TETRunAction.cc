@@ -33,7 +33,7 @@
 TETRunAction::TETRunAction(TETModelImport* _tetData, G4String _output)
 :tetData(_tetData), fRun(0), numOfEvent(0), runID(0), outputFile(_output)
 {
-	start = std::chrono::system_clock::now();
+	// start = std::chrono::system_clock::now();
 }
 
 TETRunAction::~TETRunAction()
