@@ -115,8 +115,8 @@ void TETRun::RecordEvent(const G4Event* event)
 	G4THitsMap<G4double>* evtMap_alpha_cFlux =
 			static_cast<G4THitsMap<G4double>*>(HCE->GetHC(fCollID_alpha_cFlux));
 	
-	// G4bool is_equiv = TRUE;
-	G4bool is_equiv = FALSE;
+	G4bool is_equiv = TRUE;
+	// G4bool is_equiv = FALSE;
 	// sum up the energy deposition and the square of it
 	// manual
 

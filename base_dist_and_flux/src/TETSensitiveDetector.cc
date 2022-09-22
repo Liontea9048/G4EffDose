@@ -64,14 +64,14 @@ G4bool TETSensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *) //
     if (particleEnergy < 1.0 * MeV)
     {
         // absorbed dose to equivalent dose 
-        // eDep = 2.5 + 18.2 * exp( -(log(eDep) * log(eDep)) / 6 );
+        eDep = 2.5 + 18.2 * exp( -(log(eDep) * log(eDep)) / 6 );
 
         EvtMap_manual->add(index, eDep);
     }
     else if (particleEnergy >= 1.0 * MeV)
     {
         // absorbed dose to equivalent dose 
-        // eDep = 5.0 + 17.0 * exp( -(log(2*eDep) * log(2*eDep)) / 6 );
+        eDep = 5.0 + 17.0 * exp( -(log(2*eDep) * log(2*eDep)) / 6 );
         
         EvtMap_manual->add(index, eDep);
     }
